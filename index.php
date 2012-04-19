@@ -79,6 +79,27 @@ function showindextable($idxdata)
     print '</table>';
 }
 
+function show_post($adata, $anum)
+{
+    list($aheaders, $abody) = explode("\n\n", $adata, 2);
+
+    if ($anum > 1) {
+	    print '<a href="?num='.($anum-1).'">prev</a>';
+    } else {
+	    print 'prev';
+    }
+    print ' - ';
+    print '<a href="?">index</a>';
+    print ' - ';
+    print '<a href="?num='.($anum+1).'">next</a>';
+
+    print '<pre class="article">';
+    print '<div class="aheader">'.$aheaders.'</div>';
+    print "\n";
+    print '<div class="abody">'.$abody.'</div>';
+    print '</pre>';
+}
+
 
 print '<html><head>
 <link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
@@ -94,26 +115,8 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
     $article = $ngpath . $anum;
 
     if (file_exists($article)) {
-
 	$adata = file_get_contents($article);
-	list($aheaders, $abody) = explode("\n\n", $adata, 2);
-
-	if ($anum > 1) {
-	    print '<a href="?num='.($anum-1).'">prev</a>';
-	} else {
-	    print 'prev';
-	}
-	print ' - ';
-	print '<a href="?">index</a>';
-	print ' - ';
-	print '<a href="?num='.($anum+1).'">next</a>';
-
-	print '<pre class="article">';
-	print '<div class="aheader">'.$aheaders.'</div>';
-	print "\n";
-	print '<div class="abody">'.$abody.'</div>';
-	print '</pre>';
-
+	show_post($adata, $anum);
     } else {
 	print '<p>No such post.';
     }
