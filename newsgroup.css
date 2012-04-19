@@ -2,3 +2,5 @@
 tr:nth-child(even) { background-color: #f0f0f0; }
 tr:hover td { background-color: #e0e0e0; }
 tr td > a { display:block; }
+.aheader { background:#f0f0f0; padding:0.5em; }
+.abody { padding:0.5em; }
