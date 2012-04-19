@@ -14,7 +14,7 @@ $ngname = 'rec.games.roguelike.nethack';
 
 $ng_timedate_format = 'Y-m-d H:i:s';
 
-$pagesize = 100;
+$pagesize = 250;
 
 $curpage = 1;
 
@@ -45,6 +45,8 @@ function showindextable($idxdata)
 	$topics[$art][] = $article;
 
     }
+
+    $topics = array_reverse($topics, TRUE);
 
     foreach ($topics as $t) {
 
