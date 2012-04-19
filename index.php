@@ -83,7 +83,7 @@ function showindextable($idxdata)
 
 function show_post($adata, $anum)
 {
-    list($aheaders, $abody) = explode("\n\n", $adata, 2);
+    list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
 
     if ($anum > 1) {
 	    print '<a href="?num='.($anum-1).'">prev</a>';
