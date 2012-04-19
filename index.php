@@ -4,15 +4,7 @@ $ngpath = '/var/spool/news/rec/games/roguelike/nethack/';
 $ngname = 'rec.games.roguelike.nethack';
 
 print '<html><head>
-
- <STYLE type="text/css">
-
- tr.odd { background-color: #f0f0f0; }
- tr:hover { background-color: #e0e0e0; }
-
- </STYLE>
-
-
+<link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
 <title>'.$ngname.'</title></head>';
 
 print '<body>';
