@@ -12,15 +12,22 @@ ini_set('display_errors','On');
 $ngpath = '/var/spool/news/rec/games/roguelike/nethack/';
 $ngname = 'rec.games.roguelike.nethack';
 
+$ng_timedate_format = 'Y-m-d H:i:s';
+
 $pagesize = 100;
 
 $curpage = 1;
 
+
+date_default_timezone_set('Etc/UTC');
+
 $overview = $ngpath . '.overview';
+
 
 
 function showindextable($idxdata)
 {
+    global $ng_timedate_format;
     print '<table>';
     
     print '<tr>';
@@ -56,7 +63,11 @@ function showindextable($idxdata)
 	    print '</td>';
 
 	    print '<td>';
-	    print $article[3];
+	    if (($timestamp = strtotime($article[3])) === false) {
+		print '???';
+	    } else {
+		print date($ng_timedate_format, $timestamp);
+	    }
 	    print '</td>';
 
 	    print '</tr>';
