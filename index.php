@@ -25,29 +25,26 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
     $idxdata = file($overview);
 
     print '<table>';
-
+    
+    print '<tr>';
     print '<th>Topic</th>';
     print '<th>Author</th>';
     print '<th>Date</th>';
-
-    $i = 0;
+    print '</tr>';
 
     foreach ($idxdata as $l) {
 
 	$article = explode("\t", $l);
 
-	if (($i % 2)) {
-	    print '<tr>';
-	} else {
-	    print '<tr class="odd">';
-	}
+	print '<tr>';
 
 	print '<td>';
-	print "<a href='?num=".$article[0]."'>".$article[1]."</a>";
+	print "<a href='?num=".$article[0]."'>".htmlentities($article[1])."</a>";
 	print '</td>';
 
 	print '<td>';
-	print $article[2];
+	$author = $article[2];
+	print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
 	print '</td>';
 
 	print '<td>';
@@ -55,9 +52,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
 	print '</td>';
 
 
-	print '<tr>';
-
-	$i++;
+	print '</tr>';
 
     }
 
