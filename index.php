@@ -10,10 +10,9 @@ ini_set('display_errors','On');
 
 
 $ngpath = '/var/spool/news/rec/games/roguelike/nethack/';
-$ngpath = '/home/paxed/rgrn/nethack/';
 $ngname = 'rec.games.roguelike.nethack';
 
-$pagesize = 1000;
+$pagesize = 100;
 
 $curpage = 1;
 
