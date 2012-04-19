@@ -29,27 +29,39 @@ function showindextable($idxdata)
     print '<th>Date</th>';
     print '</tr>';
 
+    $topics = array();
+
     foreach ($idxdata as $l) {
 
 	$article = explode("\t", $l);
+	$art = preg_replace('/^Re: /', '', $article[1]);
+	$topics[$art][] = $article;
 
-	print '<tr>';
+    }
 
-	print '<td>';
-	$topic = htmlentities(substr($article[1], 0, 80));
-	print "<a href='?num=".$article[0]."'>".$topic."</a>";
-	print '</td>';
+    foreach ($topics as $t) {
 
-	print '<td>';
-	$author = $article[2];
-	print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
-	print '</td>';
+	foreach ($t as $article) {
 
-	print '<td>';
-	print $article[3];
-	print '</td>';
+	    print '<tr>';
 
-	print '</tr>';
+	    print '<td>';
+	    $topic = htmlentities(substr($article[1], 0, 80));
+	    print "<a href='?num=".$article[0]."'>".$topic."</a>";
+	    print '</td>';
+
+	    print '<td>';
+	    $author = $article[2];
+	    print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
+	    print '</td>';
+
+	    print '<td>';
+	    print $article[3];
+	    print '</td>';
+
+	    print '</tr>';
+
+	}
 
     }
 
