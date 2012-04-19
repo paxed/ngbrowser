@@ -68,15 +68,21 @@ print '<h1>'.$ngname.' browser</h1>';
 if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
 
     $article = $ngpath . $_GET['num'];
-    $adata = file_get_contents($article);
 
-    list($aheaders, $abody) = explode("\n\n", $adata, 2);
+    if (file_exists($article)) {
 
-    print '<pre class="article">';
-    print '<div class="aheader">'.$aheaders.'</div>';
-    print "\n";
-    print '<div class="abody">'.$abody.'</div>';
-    print '</pre>';
+	$adata = file_get_contents($article);
+	list($aheaders, $abody) = explode("\n\n", $adata, 2);
+
+	print '<pre class="article">';
+	print '<div class="aheader">'.$aheaders.'</div>';
+	print "\n";
+	print '<div class="abody">'.$abody.'</div>';
+	print '</pre>';
+
+    } else {
+	print '<p>No such post.';
+    }
 
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9]+$/', trim($_GET['s']))) {
     $searchstr = trim(urldecode($_GET['s']));
