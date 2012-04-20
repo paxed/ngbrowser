@@ -156,7 +156,12 @@ print '<body>';
 
 print '<h1>'.$ngname.' browser</h1>';
 
-if (isset($_GET['num']) && preg_match('/^[0-9,]+$/', $_GET['num'])) {
+if ((isset($_GET['num']) && preg_match('/^[0-9,]+$/', $_GET['num'])) ||
+    (preg_match('/^[0-9]+(,[0-9]+)*$/', $_SERVER['QUERY_STRING']))) {
+
+    if (preg_match('/^[0-9]+(,[0-9]+)*$/', $_SERVER['QUERY_STRING'])) {
+	$_GET['num'] = $_SERVER['QUERY_STRING'];
+    }
 
     $anums = array_unique(explode(",", $_GET['num']));
     $header = (isset($_GET['header']) ? $_GET['header'] : 0);
