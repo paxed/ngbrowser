@@ -14,7 +14,7 @@ $ngname = 'rec.games.roguelike.nethack';
 
 $ng_timedate_format = 'Y-m-d H:i:s';
 
-$pagesize = 250;
+$pagesize = 2500;
 
 $curpage = 1;
 
@@ -23,40 +23,45 @@ date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
 
-
-
-function showindextable($idxdata)
+function get_topics_array($idxdata)
 {
-    global $ng_timedate_format;
-    print '<table>';
-    
-    print '<tr>';
-    print '<th>Topic</th>';
-    print '<th>Author</th>';
-    print '<th>Date</th>';
-    print '</tr>';
-
     $topics = array();
-
     foreach ($idxdata as $l) {
-
 	$article = explode("\t", $l);
 	$art = preg_replace('/^Re: /', '', $article[1]);
 	$topics[$art][] = $article;
-
     }
-
     $topics = array_reverse($topics, TRUE);
+    return $topics;
+}
 
-    foreach ($topics as $t) {
 
-	foreach ($t as $article) {
+function showindextable($idxdata, $idxtype=1)
+{
+    global $ng_timedate_format;
+    print '<table>';
 
+    $topics = get_topics_array($idxdata);
+
+    switch ($idxtype) {
+    case 1:
+	print '<tr>';
+	print '<th>Topic</th>';
+	print '<th>Author</th>';
+	print '<th>Date</th>';
+	print '<th>Posts</th>';
+	print '</tr>';
+	foreach ($topics as $t) {
+	    $article = $t[0];
+	    $narticles = count($t);
 	    print '<tr>';
-
 	    print '<td>';
 	    $topic = htmlentities(substr($article[1], 0, 80));
-	    print "<a href='?num=".$article[0]."'>".$topic."</a>";
+	    $anums = array();
+	    for ($i = 0; $i < $narticles; $i++) {
+		$anums[] = $t[$i][0];
+	    }
+	    print "<a href='?num=".join(",", $anums)."'>".$topic."</a>";
 	    print '</td>';
 
 	    print '<td>';
@@ -71,9 +76,41 @@ function showindextable($idxdata)
 		print date($ng_timedate_format, $timestamp);
 	    }
 	    print '</td>';
-
+	    print '<td>';
+	    print $narticles;
+	    print '</td>';
 	    print '</tr>';
+	}
+	break;
+    default:
+	print '<tr>';
+	print '<th>Topic</th>';
+	print '<th>Author</th>';
+	print '<th>Date</th>';
+	print '</tr>';
+	foreach ($topics as $t) {
+	    foreach ($t as $article) {
+		print '<tr>';
 
+		print '<td>';
+		$topic = htmlentities(substr($article[1], 0, 80));
+		print "<a href='?num=".$article[0]."'>".$topic."</a>";
+		print '</td>';
+
+		print '<td>';
+		$author = $article[2];
+		print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
+		print '</td>';
+
+		print '<td>';
+		if (($timestamp = strtotime($article[3])) === false) {
+		    print '???';
+		} else {
+		    print date($ng_timedate_format, $timestamp);
+		}
+		print '</td>';
+		print '</tr>';
+	    }
 	}
 
     }
@@ -84,7 +121,7 @@ function showindextable($idxdata)
 function show_post($adata, $anum)
 {
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
-
+    /*
     if ($anum > 1) {
 	    print '<a href="?num='.($anum-1).'">prev</a>';
     } else {
@@ -94,7 +131,7 @@ function show_post($adata, $anum)
     print '<a href="?">index</a>';
     print ' - ';
     print '<a href="?num='.($anum+1).'">next</a>';
-
+    */
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
@@ -111,16 +148,18 @@ print '<body>';
 
 print '<h1>'.$ngname.' browser</h1>';
 
-if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
+if (isset($_GET['num']) && preg_match('/^[0-9,]+$/', $_GET['num'])) {
 
-    $anum = $_GET['num'];
-    $article = $ngpath . $anum;
+    $anums = explode(",", $_GET['num']);
 
-    if (file_exists($article)) {
-	$adata = file_get_contents($article);
-	show_post($adata, $anum);
-    } else {
-	print '<p>No such post.';
+    foreach ($anums as $anum) {
+	$article = $ngpath . $anum;
+	if (file_exists($article)) {
+	    $adata = file_get_contents($article);
+	    show_post($adata, $anum);
+	} else {
+	    print '<p>No such post.';
+	}
     }
 
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9]+$/', trim($_GET['s']))) {
@@ -148,6 +187,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
     }
     $idxdata = explode("\n", rtrim($idxdata));
 
+    /*
     print '<a href="?p='.($curpage+1).'">prev</a>';
     print ' - ';
     if ($curpage > 1) {
@@ -155,6 +195,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+$/', $_GET['num'])) {
     } else {
 	print 'next';
     }
+    */
 
     showindextable($idxdata);
 }
