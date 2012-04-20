@@ -132,6 +132,7 @@ function show_post($adata, $anum)
     print ' - ';
     print '<a href="?num='.($anum+1).'">next</a>';
     */
+    print '<a name="p'.$anum.'"></a>';
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
