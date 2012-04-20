@@ -1,6 +1,6 @@
 <?php
   /*
-     num=XXX    show post
+     num=XXX    show post (also just ?XXX)
      p=XXX      page number
      s=STRING   search string
    */
@@ -61,7 +61,7 @@ function showindextable($idxdata, $idxtype=1)
 	    for ($i = 0; $i < $narticles; $i++) {
 		$anums[] = $t[$i][0];
 	    }
-	    print "<a href='?num=".join(",", $anums)."'>".$topic."</a>";
+	    print "<a href='?".join(",", $anums)."'>".$topic."</a>";
 	    print '</td>';
 
 	    print '<td>';
@@ -94,7 +94,7 @@ function showindextable($idxdata, $idxtype=1)
 
 		print '<td>';
 		$topic = htmlentities(substr($article[1], 0, 80));
-		print "<a href='?num=".$article[0]."'>".$topic."</a>";
+		print "<a href='?".$article[0]."'>".$topic."</a>";
 		print '</td>';
 
 		print '<td>';
@@ -130,14 +130,14 @@ function show_post($adata, $anum, $smallhead=0)
 
     /*
     if ($anum > 1) {
-	    print '<a href="?num='.($anum-1).'">prev</a>';
+	    print '<a href="?'.($anum-1).'">prev</a>';
     } else {
 	    print 'prev';
     }
     print ' - ';
     print '<a href="?">index</a>';
     print ' - ';
-    print '<a href="?num='.($anum+1).'">next</a>';
+    print '<a href="?'.($anum+1).'">next</a>';
     */
     print '<a name="p'.$anum.'"></a>';
     print '<pre class="article">';
