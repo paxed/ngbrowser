@@ -118,9 +118,16 @@ function showindextable($idxdata, $idxtype=1)
     print '</table>';
 }
 
-function show_post($adata, $anum)
+function show_post($adata, $anum, $smallhead=0)
 {
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
+
+    if ($smallhead) {
+	$tmp = explode("\n", $aheaders);
+	$tmps = preg_grep("/^(From|Subject|Date): .+/", $tmp);
+	$aheaders = join("\n", array_values($tmps));
+    }
+
     /*
     if ($anum > 1) {
 	    print '<a href="?num='.($anum-1).'">prev</a>';
@@ -151,15 +158,21 @@ print '<h1>'.$ngname.' browser</h1>';
 
 if (isset($_GET['num']) && preg_match('/^[0-9,]+$/', $_GET['num'])) {
 
-    $anums = explode(",", $_GET['num']);
+    $anums = array_unique(explode(",", $_GET['num']));
+    $header = (isset($_GET['header']) ? $_GET['header'] : 0);
+    $num_posts = count($anums);
 
+    $i = 1;
     foreach ($anums as $anum) {
 	$article = $ngpath . $anum;
 	if (file_exists($article)) {
 	    $adata = file_get_contents($article);
-	    show_post($adata, $anum);
+	    show_post($adata, $anum, $header);
 	} else {
 	    print '<p>No such post.';
+	}
+	if ($i++ < $num_posts) {
+	    print '<hr>';
 	}
     }
 
