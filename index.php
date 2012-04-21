@@ -4,6 +4,7 @@
      p=XXX      page number
      s=STRING   search string
      header=1   show small post header, only when viewing a post.
+     casesense=1 search is case insensitive.
    */
 
 error_reporting(E_ALL);
@@ -193,12 +194,18 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
+    $casesense = ((isset($_GET['casesense'])) ? $_GET['casesense'] : 0);
     if (strlen($searchstr) < 3) {
 	print '<p>Sorry, need a longer search string.';
     } else {
 	print '<p>Searched for: "'.$searchstr.'"';
 	$searchstr = preg_replace("/\./", '\.', $searchstr);
-	$idxdata = `grep "$searchstr" "$overview"`;
+	if ($casesense) {
+	    $casesense = ' -i ';
+	} else {
+	    $casesense = '';
+	}
+	$idxdata = `grep $casesense "$searchstr" "$overview"`;
 	$idxdata = explode("\n", rtrim($idxdata));
 	if ($idxdata[0] == "") {
 	    print "<p>No results.";
