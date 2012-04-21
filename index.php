@@ -47,15 +47,16 @@ function showindextable($idxdata, $idxtype=1)
     switch ($idxtype) {
     case 1:
 	print '<tr>';
+	print '<th>Posts</th>';
 	print '<th>Topic</th>';
 	print '<th>Author</th>';
 	print '<th>Date</th>';
-	print '<th>Posts</th>';
 	print '</tr>';
 	foreach ($topics as $t) {
 	    $article = $t[0];
 	    $narticles = count($t);
 	    print '<tr>';
+	    print '<td>' . $narticles . '</td>';
 	    print '<td>';
 	    $topic = htmlentities(substr($article[1], 0, 80));
 	    $anums = array();
@@ -76,9 +77,6 @@ function showindextable($idxdata, $idxtype=1)
 	    } else {
 		print date($ng_timedate_format, $timestamp);
 	    }
-	    print '</td>';
-	    print '<td>';
-	    print $narticles;
 	    print '</td>';
 	    print '</tr>';
 	}
