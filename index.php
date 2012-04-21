@@ -191,7 +191,11 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	$searchstr = preg_replace("/\./", '\.', $searchstr);
 	$idxdata = `grep "$searchstr" "$overview"`;
 	$idxdata = explode("\n", rtrim($idxdata));
-	showindextable($idxdata, 1);
+	if ($idxdata[0] == "") {
+	    print "<p>No results.";
+	} else {
+	    showindextable($idxdata, 1);
+	}
     }
 
 } else {
