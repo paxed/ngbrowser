@@ -3,6 +3,7 @@
      num=XXX    show post (also just ?XXX)
      p=XXX      page number
      s=STRING   search string
+     header=1   show small post header, only when viewing a post.
    */
 
 error_reporting(E_ALL);
@@ -156,12 +157,12 @@ print '<body>';
 
 print '<h1>'.$ngname.' browser</h1>';
 
-if ((isset($_GET['num']) && preg_match('/^[0-9,]+$/', $_GET['num'])) ||
-    (preg_match('/^[0-9]+(,[0-9]+)*$/', $_SERVER['QUERY_STRING']))) {
+if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
+    $tmp = explode("&", $_SERVER['QUERY_STRING']);
+    $_GET['num'] = $tmp[0];
+}
 
-    if (preg_match('/^[0-9]+(,[0-9]+)*$/', $_SERVER['QUERY_STRING'])) {
-	$_GET['num'] = $_SERVER['QUERY_STRING'];
-    }
+if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
     $anums = array_unique(explode(",", $_GET['num']));
     $header = (isset($_GET['header']) ? $_GET['header'] : 0);
