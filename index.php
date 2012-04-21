@@ -11,7 +11,7 @@ error_reporting(E_ALL);
 ini_set('display_errors','On');
 
 
-$ngpath = '/var/spool/news/rec/games/roguelike/nethack/';
+$ngpath = '/var/spool/leafnode/rec/games/roguelike/nethack/';
 $ngname = 'rec.games.roguelike.nethack';
 
 $ng_timedate_format = 'Y-m-d H:i:s';
