@@ -182,14 +182,16 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	}
     }
 
-} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9]+$/', trim($_GET['s']))) {
-    $searchstr = trim(urldecode($_GET['s']));
+} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@-]+$/', urldecode($_GET['s']))) {
+    $searchstr = urldecode($_GET['s']);
     if (strlen($searchstr) < 3) {
 	print '<p>Sorry, need a longer search string.';
     } else {
+	print '<p>Searched for: "'.$searchstr.'"';
+	$searchstr = preg_replace("/\./", '\.', $searchstr);
 	$idxdata = `grep "$searchstr" "$overview"`;
 	$idxdata = explode("\n", rtrim($idxdata));
-	showindextable($idxdata);
+	showindextable($idxdata, 1);
     }
 
 } else {
