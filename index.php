@@ -140,7 +140,6 @@ function show_post($adata, $anum, $smallhead=0)
     print ' - ';
     print '<a href="?'.($anum+1).'">next</a>';
     */
-    print '<a name="p'.$anum.'"></a>';
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
@@ -154,7 +153,7 @@ print '<html><head>
 <title>'.$ngname.'</title></head>';
 
 print '<body>';
-
+print '<a name="top"></a>';
 print '<h1>'.$ngname.' browser</h1>';
 
 if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
@@ -170,6 +169,18 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
     $i = 1;
     foreach ($anums as $anum) {
+	print '<a name="pn'.$i.'"></a>';
+	print '<a name="p'.$anum.'"></a>';
+	print '<div class="postctrl">';
+	print '#'.$i.'&nbsp;';
+	if ($i > 1) {
+	    print '<a href="#p'.$anums[$i - 2].'">&lt;</a>&nbsp;';
+	    print '<a href="#top">^</a>';
+	}
+	if ($i < $num_posts) {
+	    print '&nbsp;<a href="#p'.$anums[$i].'">&gt;</a>';
+	}
+	print '</div>';
 	$article = $ngpath . $anum;
 	if (file_exists($article)) {
 	    $adata = file_get_contents($article);
