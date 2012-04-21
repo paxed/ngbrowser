@@ -175,7 +175,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	    $adata = file_get_contents($article);
 	    show_post($adata, $anum, $header);
 	} else {
-	    print '<p>No such post.';
+	    print '<p>Post '.$anum.' does not exist.';
 	}
 	if ($i++ < $num_posts) {
 	    print '<hr>';
