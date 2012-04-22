@@ -23,6 +23,8 @@ $threaded_index = (isset($_COOKIE['ng-threaded']) ? $_COOKIE['ng-threaded'] : 1)
 
 $max_search_results = 200;
 
+$wordwrap_linelen = 79;
+
 date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
@@ -147,6 +149,7 @@ function showindextable($idxdata, $idxtype=1)
 
 function show_post($adata, $anum, $smallhead=0)
 {
+    global $wordwrap_linelen;
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
 
     if (preg_match("/\nContent-Transfer-Encoding: quoted-printable\n/", $aheaders)) {
@@ -167,10 +170,10 @@ function show_post($adata, $anum, $smallhead=0)
     print "\n";
     print '<div class="abody">';
     if (isset($abodysig)) {
-	print $abodytxt;
+	print wordwrap($abodytxt, $wordwrap_linelen);
 	print '<div class="sig">'."-- \n".$abodysig.'</div>';
     } else {
-	print $abody;
+	print wordwrap($abody, $wordwrap_linelen);
     }
     print '</div>';
     print '</pre>';
