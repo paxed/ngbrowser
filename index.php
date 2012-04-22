@@ -28,11 +28,17 @@ date_default_timezone_set('Etc/UTC');
 $overview = $ngpath . '.overview';
 
 
-function searchform($str='')
+function searchform($str='', $flatview=null)
 {
+    if ($flatview) {
+	$flatview = ' checked';
+    } else {
+	$flatview = '';
+    }
     print '<div class="searchform">';
     print '<form method="POST">';
     print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
+    print '&nbsp;<span class="flatview"><label><input type="checkbox" name="flat"'.$flatview.'>Flat view</label></span>';
     print '</form>';
     print '</div>';
 }
@@ -156,6 +162,17 @@ function show_post($adata, $anum, $smallhead=0)
     print '</pre>';
 }
 
+function toolstrip($threaded_index)
+{
+    print '<div class="tools">';
+    if ($threaded_index) {
+	print '<a href="?flat=1">Flat view</a>';
+    } else {
+	print '<a href="?flat=0">Threaded view</a>';
+    }
+    print '</div>';
+}
+
 
 print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
       ' "http://www.w3.org/TR/html4/loose.dtd">';
@@ -169,15 +186,24 @@ print '<body>';
 print '<a name="top"></a>';
 print '<h1>'.$ngname.' browser</h1>';
 
+$searchstr = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
 	$_GET['s'] = $_POST['searchstr'];
+    }
+    if (isset($_POST['flat']) && !isset($_GET['flat'])) {
+	$_GET['flat'] = $_POST['flat'];
     }
 }
 
 if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
     $tmp = explode("&", $_SERVER['QUERY_STRING']);
     $_GET['num'] = $tmp[0];
+}
+
+if (isset($_GET['flat']) && $_GET['flat']) {
+    $threaded_index = 0;
 }
 
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
@@ -217,6 +243,9 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
     $casesense = ((isset($_GET['casesense'])) ? $_GET['casesense'] : 0);
+
+    toolstrip($threaded_index);
+
     if (strlen($searchstr) < 3) {
 	print '<p>Sorry, need a longer search string.';
     } else {
@@ -241,7 +270,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	    showindextable($idxdata, $threaded_index);
 	}
     }
-    searchform($searchstr);
+    searchform($searchstr, ($threaded_index ? 0 : 1));
 
 } else {
 
@@ -258,6 +287,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     }
     $idxdata = explode("\n", rtrim($idxdata));
 
+    toolstrip($threaded_index);
     /*
     print '<a href="?p='.($curpage+1).'">prev</a>';
     print ' - ';
@@ -269,7 +299,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     */
 
     showindextable($idxdata, $threaded_index);
-    searchform();
+    searchform($searchstr, ($threaded_index ? 0 : 1));
 }
 
 print '</body></html>';
