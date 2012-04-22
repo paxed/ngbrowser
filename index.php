@@ -214,7 +214,7 @@ function mk_cookie($name, $data = null)
 
 
 
-$searchstr = '';
+$searchstr = (isset($_COOKIE['ng-searchstr']) ? $_COOKIE['ng-searchstr'] : '');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
@@ -232,6 +232,10 @@ if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_ST
 
 if (isset($_GET['flat'])) {
     $threaded_index = (($_GET['flat']) ? 0 : 1);
+}
+
+if (isset($_GET['s'])) {
+    mk_cookie('ng-searchstr', $_GET['s']);
 }
 
 mk_cookie('ng-threaded', $threaded_index);
