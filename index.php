@@ -155,10 +155,20 @@ function show_post($adata, $anum, $smallhead=0)
 	$aheaders = join("\n", array_values($tmps));
     }
 
+    if (preg_match("/\n-- \n/", $abody)) {
+	list($abodytxt, $abodysig) = preg_split("/\n-- \n/", $abody, 2);
+    }
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
-    print '<div class="abody">'.$abody.'</div>';
+    print '<div class="abody">';
+    if (isset($abodysig)) {
+	print $abodytxt;
+	print '<div class="sig">'."-- \n".$abodysig.'</div>';
+    } else {
+	print $abody;
+    }
+    print '</div>';
     print '</pre>';
 }
 

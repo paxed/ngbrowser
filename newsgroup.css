@@ -7,3 +7,4 @@ tr td > a { display:block; }
 .abody { padding:0.5em; }
 .searchform { padding:1em; margin:1em; }
 .tools { display:block; position: absolute; top:0; right:0.5em; }
+.sig { font-size:smaller; color:#606060; background-color:#f4f4ff; }
