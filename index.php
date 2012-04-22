@@ -129,17 +129,6 @@ function show_post($adata, $anum, $smallhead=0)
 	$aheaders = join("\n", array_values($tmps));
     }
 
-    /*
-    if ($anum > 1) {
-	    print '<a href="?'.($anum-1).'">prev</a>';
-    } else {
-	    print 'prev';
-    }
-    print ' - ';
-    print '<a href="?">index</a>';
-    print ' - ';
-    print '<a href="?'.($anum+1).'">next</a>';
-    */
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
