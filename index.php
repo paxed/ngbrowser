@@ -67,7 +67,7 @@ function get_topics_array($idxdata)
 function showindextable($idxdata, $idxtype=1)
 {
     global $ng_timedate_format;
-    print '<table>';
+    print '<table class="idx">';
 
     switch ($idxtype) {
     case 1:
@@ -298,11 +298,13 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $casesense = ((isset($_GET['casesense'])) ? $_GET['casesense'] : 0);
 
     toolstrip_index($threaded_index);
+    $showit = 0;
+    $results = '';
 
     if (strlen($searchstr) < 3) {
-	print '<p>Sorry, need a longer search string.';
+      $results .= 'Sorry, need a longer search string.';
     } else {
-	print '<p>Searched for: "'.$searchstr.'"';
+	$results .= 'Searched for: "'.$searchstr.'"';
 	$searchstr = preg_replace("/\./", '\.', $searchstr);
 	if ($casesense) {
 	    $casesense = ' -i ';
@@ -312,16 +314,22 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	$idxdata = `grep $casesense "$searchstr" "$overview"`;
 	$idxdata = explode("\n", rtrim($idxdata));
 	if ($idxdata[0] == "") {
-	    print "<p>No results.";
+	    $results .= '<p>No results.';
 	} else {
 	    $nresults = count($idxdata);
-	    print '<br>' . $nresults . ' results.';
+	    $results .= '<br>' . $nresults . ' results.';
 	    if ($nresults > $max_search_results) {
-		print ' Only showing '.$max_search_results.' newest hits.';
+		$results .= ' Only showing '.$max_search_results.' newest hits.';
 		$idxdata = array_slice($idxdata, -$max_search_results, $max_search_results);
 	    }
-	    showindextable($idxdata, $threaded_index);
+	    $showit = 1;
 	}
+    }
+    if ($results) {
+      print '<table class="searchresult"><tr><td>' . $results . '</td></tr></table>';
+    }
+    if ($showit) {
+      showindextable($idxdata, $threaded_index);
     }
     searchform($searchstr, ($threaded_index ? 0 : 1));
 
