@@ -1,10 +1,14 @@
-
+body { background-color:#ffffff; }
 h1 { text-align:center; }
+table { margin-left:auto; margin-right:auto; }
 tr:nth-child(even) { background-color: #f0f0f0; }
 tr:hover td { background-color: #e0e0e0; }
 tr td > a { display:block; }
+.article { margin-top:0; }
+.postctrl { font-weight:bold; }
 .aheader { background:#f0f0f0; padding:0.5em; }
 .abody { padding:0.5em; }
 .searchform { padding:1em; margin:1em; }
 .tools { display:block; position: absolute; top:0; right:0.5em; }
 .sig { font-size:smaller; color:#606060; background-color:#f4f4ff; }
+.searchform { text-align:center; }
