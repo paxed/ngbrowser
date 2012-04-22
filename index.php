@@ -16,10 +16,11 @@ $ngname = 'rec.games.roguelike.nethack';
 
 $ng_timedate_format = 'Y-m-d H:i:s';
 
-$pagesize = 2500;
+$pagesize = 1000;
 
 $curpage = 1;
 
+$threaded_index = 1;
 
 date_default_timezone_set('Etc/UTC');
 
@@ -214,7 +215,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	if ($idxdata[0] == "") {
 	    print "<p>No results.";
 	} else {
-	    showindextable($idxdata, 1);
+	    showindextable($idxdata, $threaded_index);
 	}
     }
 
@@ -243,7 +244,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     }
     */
 
-    showindextable($idxdata);
+    showindextable($idxdata, $threaded_index);
 }
 
 print '</body></html>';
