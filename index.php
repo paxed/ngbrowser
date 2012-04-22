@@ -189,7 +189,9 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	print '<a name="pn'.$i.'"></a>';
 	print '<a name="p'.$anum.'"></a>';
 	print '<div class="postctrl">';
-	print '#'.$i.'&nbsp;';
+	if ($num_posts > 1) {
+	    print '#'.$i.'&nbsp;';
+	}
 	if ($i > 1) {
 	    print '<a href="#p'.$anums[$i - 2].'">&lt;</a>&nbsp;';
 	    print '<a href="#top">^</a>';
