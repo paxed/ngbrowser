@@ -149,14 +149,14 @@ function show_post($adata, $anum, $smallhead=0)
 {
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
 
+    if (preg_match("/\nContent-Transfer-Encoding: quoted-printable\n/", $aheaders)) {
+	$abody = quoted_printable_decode($abody);
+    }
+
     if (!$smallhead) {
 	$tmp = explode("\n", $aheaders);
 	$tmps = preg_grep("/^(From|Subject|Date): .+/", $tmp);
 	$aheaders = join("\n", array_values($tmps));
-    }
-
-    if (preg_match("/\nContent-Transfer-Encoding: quoted-printable\n/", $aheaders)) {
-	$abody = quoted_printable_decode($abody);
     }
 
     if (preg_match("/\n-- \n/", $abody)) {
