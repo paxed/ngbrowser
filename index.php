@@ -190,7 +190,7 @@ function toolstrip_index($threaded_index)
 function toolstrip_post($smallheader)
 {
     print '<div class="tools">';
-    print '<a href="?">Index</a>&nbsp;';
+    print '<a href="./">Index</a>&nbsp;';
     if ($smallheader) {
 	$tmp = preg_replace('/&header=1/', '', $_SERVER['QUERY_STRING']);
 	print '<a href="?'.$tmp.'">Small headers</a>';
