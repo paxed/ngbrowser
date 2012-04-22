@@ -54,10 +54,9 @@ function showindextable($idxdata, $idxtype=1)
     global $ng_timedate_format;
     print '<table>';
 
-    $topics = get_topics_array($idxdata);
-
     switch ($idxtype) {
     case 1:
+	$topics = get_topics_array($idxdata);
 	print '<tr>';
 	print '<th>Posts</th>';
 	print '<th>Topic</th>';
@@ -94,13 +93,18 @@ function showindextable($idxdata, $idxtype=1)
 	}
 	break;
     default:
+	foreach ($idxdata as $l) {
+	    $article = explode("\t", $l);
+	    $topics[] = $article;
+	}
+	$topics = array_reverse($topics);
+
 	print '<tr>';
 	print '<th>Topic</th>';
 	print '<th>Author</th>';
 	print '<th>Date</th>';
 	print '</tr>';
-	foreach ($topics as $t) {
-	    foreach ($t as $article) {
+	foreach ($topics as $article) {
 		print '<tr>';
 
 		print '<td>';
@@ -121,7 +125,6 @@ function showindextable($idxdata, $idxtype=1)
 		}
 		print '</td>';
 		print '</tr>';
-	    }
 	}
 
     }
