@@ -42,6 +42,11 @@ function get_topics_array($idxdata)
     foreach ($idxdata as $l) {
 	$article = explode("\t", $l);
 	$art = preg_replace('/^Re: /', '', $article[1]);
+	if (isset($topics[$art])) {
+	    $tmp = $topics[$art];
+	    unset($topics[$art]);
+	    $topics[$art] = $tmp;
+	}
 	$topics[$art][] = $article;
     }
     $topics = array_reverse($topics, TRUE);
