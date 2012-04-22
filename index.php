@@ -29,7 +29,7 @@ $overview = $ngpath . '.overview';
 
 function searchform($str='')
 {
-    print '<div id="searchform">';
+    print '<div class="searchform">';
     print '<form method="POST">';
     print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
     print '</form>';
