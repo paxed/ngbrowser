@@ -149,7 +149,7 @@ function show_post($adata, $anum, $smallhead=0)
 {
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
 
-    if ($smallhead) {
+    if (!$smallhead) {
 	$tmp = explode("\n", $aheaders);
 	$tmps = preg_grep("/^(From|Subject|Date): .+/", $tmp);
 	$aheaders = join("\n", array_values($tmps));
@@ -162,13 +162,27 @@ function show_post($adata, $anum, $smallhead=0)
     print '</pre>';
 }
 
-function toolstrip($threaded_index)
+function toolstrip_index($threaded_index)
 {
     print '<div class="tools">';
     if ($threaded_index) {
 	print '<a href="?flat=1">Flat view</a>';
     } else {
 	print '<a href="?flat=0">Threaded view</a>';
+    }
+    print '</div>';
+}
+
+function toolstrip_post($smallheader)
+{
+    print '<div class="tools">';
+    print '<a href="?">Index</a>&nbsp;';
+    if ($smallheader) {
+	$tmp = preg_replace('/&header=1/', '', $_SERVER['QUERY_STRING']);
+	print '<a href="?'.$tmp.'">Small headers</a>';
+    } else {
+	$tmp = preg_replace('/&header=0/', '', $_SERVER['QUERY_STRING']);
+	print '<a href="?'.$tmp.'&header=1">Full headers</a>';
     }
     print '</div>';
 }
@@ -212,6 +226,8 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $header = (isset($_GET['header']) ? $_GET['header'] : 0);
     $num_posts = count($anums);
 
+    toolstrip_post($header);
+
     $i = 1;
     foreach ($anums as $anum) {
 	print '<a name="pn'.$i.'"></a>';
@@ -244,7 +260,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $searchstr = urldecode($_GET['s']);
     $casesense = ((isset($_GET['casesense'])) ? $_GET['casesense'] : 0);
 
-    toolstrip($threaded_index);
+    toolstrip_index($threaded_index);
 
     if (strlen($searchstr) < 3) {
 	print '<p>Sorry, need a longer search string.';
@@ -287,7 +303,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     }
     $idxdata = explode("\n", rtrim($idxdata));
 
-    toolstrip($threaded_index);
+    toolstrip_index($threaded_index);
     /*
     print '<a href="?p='.($curpage+1).'">prev</a>';
     print ' - ';
