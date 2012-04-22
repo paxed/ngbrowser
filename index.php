@@ -17,10 +17,11 @@ $ngname = 'rec.games.roguelike.nethack';
 $ng_timedate_format = 'Y-m-d H:i:s';
 
 $pagesize = 1000;
-
 $curpage = 1;
 
 $threaded_index = 1;
+
+$max_search_results = 200;
 
 date_default_timezone_set('Etc/UTC');
 
@@ -41,6 +42,7 @@ function get_topics_array($idxdata)
     $topics = array();
     foreach ($idxdata as $l) {
 	$article = explode("\t", $l);
+	if (!isset($article[1])) { print $l.'<br>'; }
 	$art = preg_replace('/^Re: /', '', $article[1]);
 	if (isset($topics[$art])) {
 	    $tmp = $topics[$art];
@@ -230,6 +232,12 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	if ($idxdata[0] == "") {
 	    print "<p>No results.";
 	} else {
+	    $nresults = count($idxdata);
+	    print '<br>' . $nresults . ' results.';
+	    if ($nresults > $max_search_results) {
+		print ' Only showing '.$max_search_results.' newest hits.';
+		$idxdata = array_slice($idxdata, -$max_search_results, $max_search_results);
+	    }
 	    showindextable($idxdata, $threaded_index);
 	}
     }
