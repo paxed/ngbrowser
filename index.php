@@ -19,7 +19,7 @@ $ng_timedate_format = 'Y-m-d H:i:s';
 $pagesize = 1000;
 $curpage = 1;
 
-$threaded_index = 1;
+$threaded_index = (isset($_COOKIE['ng-threaded']) ? $_COOKIE['ng-threaded'] : 1);
 
 $max_search_results = 200;
 
@@ -201,18 +201,18 @@ function toolstrip_post($smallheader)
     print '</div>';
 }
 
+function mk_cookie($name, $data = null)
+{
+    if ($data !== null) {
+	setcookie($name, $data, time()+3600*24*365, '/', $_SERVER['SERVER_NAME']);
+	$_COOKIE[$name] = $data;
+    } else {
+	setcookie($name, '', time()-3600, '/', $_SERVER['SERVER_NAME']);
+	unset($_COOKIE[$name]);
+    }
+}
 
-print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
-      ' "http://www.w3.org/TR/html4/loose.dtd">';
 
-print '<html><head>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-<link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
-<title>'.$ngname.'</title></head>';
-
-print '<body>';
-print '<a name="top"></a>';
-print '<h1>'.$ngname.' browser</h1>';
 
 $searchstr = '';
 
@@ -230,9 +230,25 @@ if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_ST
     $_GET['num'] = $tmp[0];
 }
 
-if (isset($_GET['flat']) && $_GET['flat']) {
-    $threaded_index = 0;
+if (isset($_GET['flat'])) {
+    $threaded_index = (($_GET['flat']) ? 0 : 1);
 }
+
+mk_cookie('ng-threaded', $threaded_index);
+
+
+print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
+      ' "http://www.w3.org/TR/html4/loose.dtd">';
+
+print '<html><head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
+<title>'.$ngname.'</title></head>';
+
+print '<body>';
+print '<a name="top"></a>';
+print '<h1>'.$ngname.' browser</h1>';
+
 
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
