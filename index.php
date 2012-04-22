@@ -36,7 +36,7 @@ function searchform($str='', $flatview=null)
 	$flatview = '';
     }
     print '<div class="searchform">';
-    print '<form method="POST">';
+    print '<form method="POST" action="./">';
     print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
     print '&nbsp;<span class="flatview"><label><input type="checkbox" name="flat"'.$flatview.'>Flat view</label></span>';
     print '</form>';
