@@ -26,6 +26,16 @@ date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
 
+
+function searchform($str='')
+{
+    print '<div id="searchform">';
+    print '<form method="POST">';
+    print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
+    print '</form>';
+    print '</div>';
+}
+
 function get_topics_array($idxdata)
 {
     $topics = array();
@@ -149,6 +159,12 @@ print '<body>';
 print '<a name="top"></a>';
 print '<h1>'.$ngname.' browser</h1>';
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
+	$_GET['s'] = $_POST['searchstr'];
+    }
+}
+
 if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
     $tmp = explode("&", $_SERVER['QUERY_STRING']);
     $_GET['num'] = $tmp[0];
@@ -207,6 +223,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	    showindextable($idxdata, $threaded_index);
 	}
     }
+    searchform($searchstr);
 
 } else {
 
@@ -234,6 +251,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     */
 
     showindextable($idxdata, $threaded_index);
+    searchform();
 }
 
 print '</body></html>';
