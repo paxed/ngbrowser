@@ -28,7 +28,7 @@ $wordwrap_linelen = 79;
 date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
-
+$ngversion = 'ngbrowser v0.1';
 
 function searchform($str='', $flatview=null)
 {
@@ -363,4 +363,5 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     searchform($searchstr, ($threaded_index ? 0 : 1));
 }
 
+print '<div class="footer">'.$ngversion.'</div>';
 print '</body></html>';

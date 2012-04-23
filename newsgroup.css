@@ -12,4 +12,4 @@ tr:nth-child(even) { background-color: #f0f0f0; }
 .searchform { text-align:center; padding:1em; margin:1em; }
 .tools { display:block; position: absolute; top:0; right:0.5em; }
 .sig { font-size:smaller; color:#606060; background-color:#f4f4ff; }
-
+.footer { float:right; color:#808080; font-size:smaller; }
