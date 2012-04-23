@@ -346,11 +346,11 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     searchform($searchstr, $casesense);
 
 } else {
-
+  /*
     if (isset($_GET['p']) && preg_match('/^[0-9]+$/', $_GET['p'])) {
 	$curpage = $_GET['p'];
     }
-
+  */
     if ($curpage < 2) {
 	$idxdata = `tail -$pagesize "$overview"`;
 	$curpage = 1;
