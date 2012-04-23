@@ -20,6 +20,8 @@ $pagesize = 1000;
 $curpage = 1;
 
 $threaded_index = (isset($_COOKIE['ng-threaded']) ? $_COOKIE['ng-threaded'] : 1);
+$casesense = 0;
+
 
 $max_search_results = 200;
 
@@ -30,17 +32,17 @@ date_default_timezone_set('Etc/UTC');
 $overview = $ngpath . '.overview';
 $ngversion = 'ngbrowser v0.1';
 
-function searchform($str='', $flatview=null)
+function searchform($str='', $casesense=0)
 {
-    if ($flatview) {
-	$flatview = ' checked';
+    if ($casesense) {
+	$casesense = ' checked';
     } else {
-	$flatview = '';
+	$casesense = '';
     }
     print '<div class="searchform">';
     print '<form method="POST" action="./">';
     print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
-    print '&nbsp;<span class="flatview"><label><input type="checkbox" name="flat"'.$flatview.'>Flat view</label></span>';
+    print '&nbsp;<span class="casesense"><label><input type="checkbox" name="casesense"'.$casesense.'>Case insensitive</label></span>';
     print '</form>';
     print '</div>';
 }
@@ -226,6 +228,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['flat']) && !isset($_GET['flat'])) {
 	$_GET['flat'] = $_POST['flat'];
     }
+    if (isset($_POST['casesense']) && !isset($_GET['casesense'])) {
+	$_GET['casesense'] = $_POST['casesense'];
+    }
 }
 
 if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
@@ -240,6 +245,10 @@ if (isset($_GET['flat'])) {
 if (isset($_GET['s'])) {
     mk_cookie('ng-searchstr', $_GET['s']);
 }
+
+
+$casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0);
+
 
 mk_cookie('ng-threaded', $threaded_index);
 
@@ -256,6 +265,7 @@ print '<body>';
 print '<a name="top"></a>';
 print '<h1>'.$ngname.' browser</h1>';
 
+/*print $casesense . '<br>' . (isset($_GET['casesense']) ? $_GET['casesense'] : 'xxx') . '<br>' . (isset($_POST['casesense']) ? $_POST['casesense'] : 'yyy');*/
 
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
@@ -295,7 +305,6 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
-    $casesense = ((isset($_GET['casesense'])) ? $_GET['casesense'] : 0);
 
     toolstrip_index($threaded_index);
     $showit = 0;
@@ -305,13 +314,16 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
       $results .= 'Sorry, need a longer search string.';
     } else {
 	$results .= 'Searched for: "'.$searchstr.'"';
+	if ($casesense) {
+	  $results .= ' (no case)';
+	}
 	$searchstr = preg_replace("/\./", '\.', $searchstr);
 	if ($casesense) {
-	    $casesense = ' -i ';
+	    $casesensestr = ' -i ';
 	} else {
-	    $casesense = '';
+	    $casesensestr = '';
 	}
-	$idxdata = `grep $casesense "$searchstr" "$overview"`;
+	$idxdata = `grep $casesensestr "$searchstr" "$overview"`;
 	$idxdata = explode("\n", rtrim($idxdata));
 	if ($idxdata[0] == "") {
 	    $results .= '<p>No results.';
@@ -331,7 +343,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     if ($showit) {
       showindextable($idxdata, $threaded_index);
     }
-    searchform($searchstr, ($threaded_index ? 0 : 1));
+    searchform($searchstr, $casesense);
 
 } else {
 
@@ -360,7 +372,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     */
 
     showindextable($idxdata, $threaded_index);
-    searchform($searchstr, ($threaded_index ? 0 : 1));
+    searchform($searchstr, $casesense);
 }
 
 print '<div class="footer">'.$ngversion.'</div>';
