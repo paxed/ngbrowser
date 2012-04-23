@@ -30,7 +30,7 @@ $wordwrap_linelen = 79;
 date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
-$ngversion = 'ngbrowser v0.1';
+$ngversion = 'v0.1';
 
 function searchform($str='', $casesense=0)
 {
@@ -375,5 +375,5 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     searchform($searchstr, $casesense);
 }
 
-print '<div class="footer">'.$ngversion.'</div>';
+print '<div class="footer"><a href="http://github.com/paxed/ngbrowser">ngbrowser '.$ngversion.'</a></div>';
 print '</body></html>';
