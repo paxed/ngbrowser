@@ -398,6 +398,7 @@ $casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0)
 
 mk_cookie('ng-threaded', $threaded_index);
 mk_cookie('ng-lastvisit', $lastvisit);
+$_SESSION['ng-lastvisit'] = $lastvisit;
 
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $anums = array_unique(explode(",", $_GET['num']));
