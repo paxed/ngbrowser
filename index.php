@@ -217,59 +217,30 @@ function mk_cookie($name, $data = null)
     }
 }
 
-
-
-$searchstr = (isset($_COOKIE['ng-searchstr']) ? $_COOKIE['ng-searchstr'] : '');
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
-	$_GET['s'] = $_POST['searchstr'];
-    }
-    if (isset($_POST['flat']) && !isset($_GET['flat'])) {
-	$_GET['flat'] = $_POST['flat'];
-    }
-    if (isset($_POST['casesense']) && !isset($_GET['casesense'])) {
-	$_GET['casesense'] = $_POST['casesense'];
-    }
-}
-
-if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
-    $tmp = explode("&", $_SERVER['QUERY_STRING']);
-    $_GET['num'] = $tmp[0];
-}
-
-if (isset($_GET['flat'])) {
-    $threaded_index = (($_GET['flat']) ? 0 : 1);
-}
-
-if (isset($_GET['s'])) {
-    mk_cookie('ng-searchstr', $_GET['s']);
-}
-
-
-$casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0);
-
-
-mk_cookie('ng-threaded', $threaded_index);
-
-
-print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
+function page_head($title)
+{
+    print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
       ' "http://www.w3.org/TR/html4/loose.dtd">';
 
-print '<html><head>
+    print '<html><head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
-<title>'.$ngname.'</title></head>';
+<title>'.$title.'</title></head>';
 
-print '<body>';
-print '<a name="top"></a>';
-print '<h1>'.$ngname.' browser</h1>';
+    print '<body>';
+    print '<a name="top"></a>';
+    print '<h1>'.$title.' browser</h1>';
+}
 
-/*print $casesense . '<br>' . (isset($_GET['casesense']) ? $_GET['casesense'] : 'xxx') . '<br>' . (isset($_POST['casesense']) ? $_POST['casesense'] : 'yyy');*/
+function page_foot()
+{
+    global $ngversion;
+    print '<div class="footer"><a href="http://github.com/paxed/ngbrowser">ngbrowser '.$ngversion.'</a></div></body></html>';
+}
 
-if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
-
-    $anums = array_unique(explode(",", $_GET['num']));
+function show_post_page($anums)
+{
+    global $ngpath;
     $header = (isset($_GET['header']) ? $_GET['header'] : 0);
     $num_posts = count($anums);
 
@@ -302,10 +273,11 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	    print '<hr>';
 	}
     }
+}
 
-} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
-    $searchstr = urldecode($_GET['s']);
-
+function show_search_page($searchstr, $threaded_index, $casesense)
+{
+    global $overview, $max_search_results;
     toolstrip_index($threaded_index);
     $showit = 0;
     $results = '';
@@ -344,13 +316,11 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
       showindextable($idxdata, $threaded_index);
     }
     searchform($searchstr, $casesense);
+}
 
-} else {
-  /*
-    if (isset($_GET['p']) && preg_match('/^[0-9]+$/', $_GET['p'])) {
-	$curpage = $_GET['p'];
-    }
-  */
+function show_index_page($curpage, $searchstr, $threaded_index, $casesense)
+{
+    global $overview, $pagesize;
     if ($curpage < 2) {
 	$idxdata = `tail -$pagesize "$overview"`;
 	$curpage = 1;
@@ -375,5 +345,55 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     searchform($searchstr, $casesense);
 }
 
-print '<div class="footer"><a href="http://github.com/paxed/ngbrowser">ngbrowser '.$ngversion.'</a></div>';
-print '</body></html>';
+$searchstr = (isset($_COOKIE['ng-searchstr']) ? $_COOKIE['ng-searchstr'] : '');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
+	$_GET['s'] = $_POST['searchstr'];
+    }
+    if (isset($_POST['flat']) && !isset($_GET['flat'])) {
+	$_GET['flat'] = $_POST['flat'];
+    }
+    if (isset($_POST['casesense']) && !isset($_GET['casesense'])) {
+	$_GET['casesense'] = $_POST['casesense'];
+    }
+}
+
+if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
+    $tmp = explode("&", $_SERVER['QUERY_STRING']);
+    $_GET['num'] = $tmp[0];
+}
+
+if (isset($_GET['flat'])) {
+    $threaded_index = (($_GET['flat']) ? 0 : 1);
+}
+
+if (isset($_GET['s'])) {
+    mk_cookie('ng-searchstr', $_GET['s']);
+}
+
+
+$casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0);
+
+
+mk_cookie('ng-threaded', $threaded_index);
+
+page_head($ngname);
+
+if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
+    $anums = array_unique(explode(",", $_GET['num']));
+    show_post_page($anums);
+} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
+    $searchstr = urldecode($_GET['s']);
+    show_search_page($searchstr, $threaded_index, $casesense);
+} else {
+  /*
+    if (isset($_GET['p']) && preg_match('/^[0-9]+$/', $_GET['p'])) {
+	$curpage = $_GET['p'];
+    }
+  */
+    show_index_page($curpage, $searchstr, $threaded_index, $casesense);
+}
+
+page_foot();
+
