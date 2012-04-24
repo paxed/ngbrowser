@@ -32,6 +32,8 @@ date_default_timezone_set('Etc/UTC');
 $overview = $ngpath . '.overview';
 $ngversion = 'v0.1';
 
+$thread_subject = null; /* hacky */
+
 function searchform($str='', $casesense=0)
 {
     if ($casesense) {
@@ -151,11 +153,17 @@ function showindextable($idxdata, $idxtype=1)
 
 function show_post($adata, $anum, $smallhead=0)
 {
-    global $wordwrap_linelen;
+    global $wordwrap_linelen, $thread_subject;
     list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
 
     if (preg_match("/\nContent-Transfer-Encoding: quoted-printable\n/", $aheaders)) {
 	$abody = quoted_printable_decode($abody);
+    }
+
+    if (!$thread_subject) {
+	if (preg_match("/\nSubject: (.+)\n/", $aheaders, $matches)) {
+	    $thread_subject = $matches[1];
+	}
     }
 
     if (!$smallhead) {
@@ -217,7 +225,7 @@ function mk_cookie($name, $data = null)
     }
 }
 
-function page_head($title)
+function page_head($title, $first=null)
 {
     print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
       ' "http://www.w3.org/TR/html4/loose.dtd">';
@@ -225,11 +233,14 @@ function page_head($title)
     print '<html><head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
-<title>'.$title.'</title></head>';
+<title>'.($first ? ($first.' - ') : '').$title.'</title></head>';
 
     print '<body>';
     print '<a name="top"></a>';
     print '<h1>'.$title.' browser</h1>';
+    if ($first) {
+	print '<h2>'.$first.'</h2>';
+    }
 }
 
 function page_foot()
@@ -378,13 +389,16 @@ $casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0)
 
 mk_cookie('ng-threaded', $threaded_index);
 
-page_head($ngname);
-
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $anums = array_unique(explode(",", $_GET['num']));
+    ob_start();
     show_post_page($anums);
+    $pagestr = ob_get_clean();
+    page_head($ngname, ($thread_subject ? ($thread_subject) : null));
+    print $pagestr;
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
+    page_head($ngname);
     show_search_page($searchstr, $threaded_index, $casesense);
 } else {
   /*
@@ -392,6 +406,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 	$curpage = $_GET['p'];
     }
   */
+    page_head($ngname);
     show_index_page($curpage, $searchstr, $threaded_index, $casesense);
 }
 
