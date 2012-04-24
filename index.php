@@ -10,6 +10,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
+session_start();
 
 $ngpath = '/var/spool/leafnode/rec/games/roguelike/nethack/';
 $ngname = 'rec.games.roguelike.nethack';
@@ -34,6 +35,10 @@ $ngversion = 'v0.1';
 
 $thread_subject = null; /* hacky */
 
+$lastvisit = (isset($_SESSION['ng-lastvisit']) ? $_SESSION['ng-lastvisit'] :
+	      (isset($_COOKIE['ng-lastvisit']) ? $_COOKIE['ng-lastvisit'] : time()));
+
+
 function searchform($str='', $casesense=0)
 {
     if ($casesense) {
@@ -51,17 +56,23 @@ function searchform($str='', $casesense=0)
 
 function get_topics_array($idxdata)
 {
+    global $lastvisit;
     $topics = array();
     foreach ($idxdata as $l) {
 	$article = explode("\t", $l);
 	if (!isset($article[1])) { print $l.'<br>'; }
 	$art = preg_replace('/^Re: /', '', $article[1]);
-	if (isset($topics[$art])) {
+	if (isset($topics[$art]['articles'])) {
 	    $tmp = $topics[$art];
 	    unset($topics[$art]);
 	    $topics[$art] = $tmp;
 	}
-	$topics[$art][] = $article;
+	$article[3] = strtotime($article[3]);
+	$topics[$art]['articles'][] = $article;
+	if ($article[3] >= $lastvisit) {
+	    if (!isset($topics[$art]['newer'])) { $topics[$art]['newer'] = 0; }
+	    $topics[$art]['newer']++;
+	}
     }
     $topics = array_reverse($topics, TRUE);
     return $topics;
@@ -70,7 +81,7 @@ function get_topics_array($idxdata)
 
 function showindextable($idxdata, $idxtype=1)
 {
-    global $ng_timedate_format;
+    global $ng_timedate_format, $lastvisit;
     print '<table class="idx">';
 
     switch ($idxtype) {
@@ -83,15 +94,19 @@ function showindextable($idxdata, $idxtype=1)
 	print '<th>Date</th>';
 	print '</tr>';
 	foreach ($topics as $t) {
-	    $article = $t[0];
-	    $narticles = count($t);
+	    $article = $t['articles'][0];
+	    $narticles = count($t['articles']);
 	    print '<tr>';
-	    print '<td>' . $narticles . '</td>';
+	    print '<td>' . $narticles;
+	    if (isset($t['newer'])) {
+		print '&nbsp;<b>('.$t['newer'].')</b>';
+	    }
+	    print '</td>';
 	    print '<td>';
 	    $topic = htmlentities(substr($article[1], 0, 80));
 	    $anums = array();
 	    for ($i = 0; $i < $narticles; $i++) {
-		$anums[] = $t[$i][0];
+		$anums[] = $t['articles'][$i][0];
 	    }
 	    print "<a href='?".join(",", $anums)."'>".$topic."</a>";
 	    print '</td>';
@@ -102,11 +117,7 @@ function showindextable($idxdata, $idxtype=1)
 	    print '</td>';
 
 	    print '<td>';
-	    if (($timestamp = strtotime($article[3])) === false) {
-		print '???';
-	    } else {
-		print date($ng_timedate_format, $timestamp);
-	    }
+	    print date($ng_timedate_format, $article[3]);
 	    print '</td>';
 	    print '</tr>';
 	}
@@ -114,6 +125,7 @@ function showindextable($idxdata, $idxtype=1)
     default:
 	foreach ($idxdata as $l) {
 	    $article = explode("\t", $l);
+	    $article[3] = strtotime($article[3]);
 	    $topics[] = $article;
 	}
 	$topics = array_reverse($topics);
@@ -124,11 +136,12 @@ function showindextable($idxdata, $idxtype=1)
 	print '<th>Date</th>';
 	print '</tr>';
 	foreach ($topics as $article) {
-		print '<tr>';
+		$isnewer = ($article[3] >= $lastvisit);
+		print '<tr'.($isnewer ? ' class="newer"' : '').'>';
 
 		print '<td>';
 		$topic = htmlentities(substr($article[1], 0, 80));
-		print "<a href='?".$article[0]."'>".$topic."</a>";
+		print ($isnewer ? '<b>' : '')."<a href='?".$article[0]."'>".$topic."</a>".($isnewer ? '</b>' : '');
 		print '</td>';
 
 		print '<td>';
@@ -137,11 +150,7 @@ function showindextable($idxdata, $idxtype=1)
 		print '</td>';
 
 		print '<td>';
-		if (($timestamp = strtotime($article[3])) === false) {
-		    print '???';
-		} else {
-		    print date($ng_timedate_format, $timestamp);
-		}
+		print date($ng_timedate_format, $article[3]);
 		print '</td>';
 		print '</tr>';
 	}
@@ -388,6 +397,7 @@ $casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0)
 
 
 mk_cookie('ng-threaded', $threaded_index);
+mk_cookie('ng-lastvisit', $lastvisit);
 
 if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $anums = array_unique(explode(",", $_GET['num']));
