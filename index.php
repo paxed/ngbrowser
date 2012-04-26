@@ -408,7 +408,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     $pagestr = ob_get_clean();
     page_head($ngname, ($thread_subject ? ($thread_subject) : null));
     print $pagestr;
-} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#-]+$/', urldecode($_GET['s']))) {
+} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#_-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
     page_head($ngname);
     show_search_page($searchstr, $threaded_index, $casesense);
