@@ -61,7 +61,8 @@ function get_topics_array($idxdata)
     foreach ($idxdata as $l) {
 	$article = explode("\t", $l);
 	if (!isset($article[1])) { print $l.'<br>'; }
-	$art = preg_replace('/^Re: /', '', $article[1]);
+	$art = preg_replace('/^Re: /', '', trim($article[1]));
+	$art = preg_replace('/  +/', ' ', $art);
 	if (isset($topics[$art]['articles'])) {
 	    $tmp = $topics[$art];
 	    unset($topics[$art]);
