@@ -31,13 +31,13 @@ $wordwrap_linelen = 79;
 date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
-$ngversion = 'v0.1';
 
 $thread_subject = null; /* hacky */
 
 $lastvisit = (isset($_SESSION['ng-lastvisit']) ? $_SESSION['ng-lastvisit'] :
 	      (isset($_COOKIE['ng-lastvisit']) ? $_COOKIE['ng-lastvisit'] : time()));
 
+include "common.php";
 
 function searchform($str='', $casesense=0)
 {
@@ -73,6 +73,7 @@ function get_topics_array($idxdata)
 	if ($article[3] >= $lastvisit) {
 	    if (!isset($topics[$art]['newer'])) { $topics[$art]['newer'] = 0; }
 	    $topics[$art]['newer']++;
+	    $topics[$art]['newer_posts'][] =  $article[0];
 	}
     }
     $topics = array_reverse($topics, TRUE);
@@ -100,7 +101,13 @@ function showindextable($idxdata, $idxtype=1)
 	    print '<tr>';
 	    print '<td>' . $narticles;
 	    if (isset($t['newer'])) {
-		print '&nbsp;<b>('.$t['newer'].')</b>';
+		print '&nbsp;<b>(';
+		if (isset($_COOKIE['ng-newlinks']) && ($_COOKIE['ng-newlinks'] == 1)) {
+		    print "<a href='?".join(",", $t['newer_posts'])."'>".$t['newer']."</a>";
+		} else {
+		    print $t['newer'];
+		}
+		print ')</b>';
 	    }
 	    print '</td>';
 	    print '<td>';
@@ -182,18 +189,20 @@ function show_post($adata, $anum, $smallhead=0)
 	$aheaders = join("\n", array_values($tmps));
     }
 
+    if (isset($_COOKIE['ng-urllinks']) && ($_COOKIE['ng-urllinks'] == '1')) {
+	$abody = preg_replace('/((https?|ftp):\/\/([\w\d\-]+)(\.[\w\d\-]+){1,})([\/\?\w\d\.=&+%~_\-#;:@]+)?/','<A href="\\1\\5">\\1\\5</A>',$abody);
+    }
+
     if (preg_match("/\n-- \n/", $abody)) {
-	list($abodytxt, $abodysig) = preg_split("/\n-- \n/", $abody, 2);
+	list($abody, $abodysig) = preg_split("/\n-- \n/", $abody, 2);
     }
     print '<pre class="article">';
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
     print '<div class="abody">';
+    print wordwrap($abody, $wordwrap_linelen);
     if (isset($abodysig)) {
-	print wordwrap($abodytxt, $wordwrap_linelen);
 	print '<div class="sig">'."-- \n".$abodysig.'</div>';
-    } else {
-	print wordwrap($abody, $wordwrap_linelen);
     }
     print '</div>';
     print '</pre>';
@@ -207,6 +216,7 @@ function toolstrip_index($threaded_index)
     } else {
 	print '<a href="?flat=0">Threaded view</a>';
     }
+    print '&nbsp;<a href="settings.php">Settings</a>';
     print '</div>';
 }
 
@@ -221,42 +231,8 @@ function toolstrip_post($smallheader)
 	$tmp = preg_replace('/&header=0/', '', $_SERVER['QUERY_STRING']);
 	print '<a href="?'.$tmp.'&header=1">Full headers</a>';
     }
+    print '&nbsp;<a href="settings.php">Settings</a>';
     print '</div>';
-}
-
-function mk_cookie($name, $data = null)
-{
-    if ($data !== null) {
-	setcookie($name, $data, time()+3600*24*365, '/', $_SERVER['SERVER_NAME']);
-	$_COOKIE[$name] = $data;
-    } else {
-	setcookie($name, '', time()-3600, '/', $_SERVER['SERVER_NAME']);
-	unset($_COOKIE[$name]);
-    }
-}
-
-function page_head($title, $first=null)
-{
-    print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
-      ' "http://www.w3.org/TR/html4/loose.dtd">';
-
-    print '<html><head>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-<link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
-<title>'.($first ? ($first.' - ') : '').$title.'</title></head>';
-
-    print '<body>';
-    print '<a name="top"></a>';
-    print '<h1>'.$title.' browser</h1>';
-    if ($first) {
-	print '<h2>'.$first.'</h2>';
-    }
-}
-
-function page_foot()
-{
-    global $ngversion;
-    print '<div class="footer"><a href="http://github.com/paxed/ngbrowser">ngbrowser '.$ngversion.'</a></div></body></html>';
 }
 
 function show_post_page($anums)
