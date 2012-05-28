@@ -34,5 +34,10 @@ function page_head($title, $first=null)
 function page_foot()
 {
     global $ngversion;
-    print '<div class="footer"><a href="http://github.com/paxed/ngbrowser">ngbrowser '.$ngversion.'</a></div></body></html>';
+    print '
+<script type="text/javascript">
+document.write("<div class=\'footer\'><a href=\'http://github.com/paxed/ngbrowser\'>ngbrowser '.$ngversion.'</a></div>");
+</script>
+';
+    print '</body></html>';
 }
