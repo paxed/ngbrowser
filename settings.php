@@ -31,11 +31,44 @@ function check_checkbox($name)
   }
 }
 
-$setvars = array(array('name' => 'urllinks', 'desc' => 'Clickable links in posts'),
-                array('name' => 'newlinks', 'desc' => 'Number of new posts in threaded index are links to the new posts'));
+function mk_input($name, $desc, $value=NULL)
+{
+  $val = (isset($_POST[$name]) ? $_POST[$name] : $value);
+  $len = (isset($value) ? strlen($value) : 10);
+  return '<span class="set-'.$name.'"><label>'.$desc.'<input type="text" name="'.$name.'" value="'.$val.'" size="'.$len.'"></label></span>';
+}
+
+function check_input($name)
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  } else {
+    if ($_COOKIE['ng-'.$name]) {
+      $_POST[$name] = $_COOKIE['ng-'.$name];
+    }
+  }
+  if (isset($_POST[$name])) {
+    mk_cookie('ng-'.$name, $_POST[$name]);
+  }
+}
+
+
+$setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Clickable links in posts'),
+		 '<br>',
+		 array('name' => 'newlinks', 'type' => 'checkbox', 'desc' => 'Number of new posts in threaded index are links to the new posts'),
+		 '<br>',
+		 array('name' => 'wordwrap', 'type' => 'checkbox', 'desc' => 'Word wrap posts at column '),
+		 array('name' => 'wordwraplen', 'type' => 'input', 'desc' => '', 'value' => '79'));
 
 foreach ($setvars as $sv) {
-  check_checkbox($sv['name']);
+    switch ($sv['type']) {
+    case 'checkbox':
+	check_checkbox($sv['name']);
+	break;
+    case 'input':
+	check_input($sv['name']);
+	break;
+    default:
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -48,11 +81,22 @@ page_head('Settings');
 print '<div class="settingsform">';
 print '<form method="POST" action="settings.php">';
 foreach ($setvars as $sv) {
-  print mk_checkbox($sv['name'], $sv['desc']);
-  print '<br>';
+    if (is_array($sv)) {
+	switch ($sv['type']) {
+	case 'checkbox':
+	    print mk_checkbox($sv['name'], $sv['desc']);
+	    break;
+	case 'input':
+	    print mk_input($sv['name'], $sv['desc'], (isset($sv['value']) ? $sv['value'] : NULL));
+	    break;
+	default:
+	}
+    } else print $sv;
 }
-print '<input type="hidden" name="goto" value="'.$_SERVER['HTTP_REFERER'].'">';
-print '<input type="Submit">';
+print '<br>';
+if (isset($_SERVER['HTTP_REFERER']))
+    print '<input type="hidden" name="goto" value="'.$_SERVER['HTTP_REFERER'].'">';
+print '<input type="Submit" value="Save">';
 print '</form>';
 print '</div>';
 

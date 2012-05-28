@@ -26,8 +26,6 @@ $casesense = 0;
 
 $max_search_results = 200;
 
-$wordwrap_linelen = 79;
-
 date_default_timezone_set('Etc/UTC');
 
 $overview = $ngpath . '.overview';
@@ -36,6 +34,11 @@ $thread_subject = null; /* hacky */
 
 $lastvisit = (isset($_SESSION['ng-lastvisit']) ? $_SESSION['ng-lastvisit'] :
 	      (isset($_COOKIE['ng-lastvisit']) ? $_COOKIE['ng-lastvisit'] : time()));
+
+$wordwrap_linelen = (isset($_SESSION['ng-wordwrap']) && ($_SESSION['ng-wordwrap']==1) && isset($_SESSION['ng-wordwraplen'])) ? $_SESSION['ng-wordwraplen'] :
+    ((isset($_COOKIE['ng-wordwrap']) && ($_COOKIE['ng-wordwrap']==1) && isset($_COOKIE['ng-wordwraplen'])) ? $_COOKIE['ng-wordwraplen'] : 0);
+
+if (!preg_match('/^[0-9]+$/', $wordwrap_linelen)) $wordwrap_linelen = 0;
 
 include "common.php";
 
@@ -200,7 +203,10 @@ function show_post($adata, $anum, $smallhead=0)
     print '<div class="aheader">'.$aheaders.'</div>';
     print "\n";
     print '<div class="abody">';
-    print wordwrap($abody, $wordwrap_linelen);
+    if ($wordwrap_linelen > 10)
+	print wordwrap($abody, $wordwrap_linelen);
+    else
+	print $abody;
     if (isset($abodysig)) {
 	print '<div class="sig">'."-- \n".$abodysig.'</div>';
     }
