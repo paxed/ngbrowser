@@ -54,6 +54,8 @@ function check_input($name)
 
 $setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Clickable links in posts'),
 		 '<br>',
+		 array('name' => 'postheader', 'type' => 'checkbox', 'desc' => 'Show post full headers'),
+		 '<br>',
 		 array('name' => 'threaded', 'type' => 'checkbox', 'desc' => 'Use a threaded index'),
 		 '<br>',
 		 array('name' => 'newlinks', 'type' => 'checkbox', 'desc' => 'Number of new posts in threaded index are links to the new posts'),

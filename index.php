@@ -25,6 +25,7 @@ $curpage = 1;
 $threaded_index = (isset($_COOKIE['ng-threaded']) ? $_COOKIE['ng-threaded'] : 1);
 $casesense = 0;
 
+$post_headers = (isset($_GET['header']) ? $_GET['header'] : (isset($_COOKIE['ng-postheader']) ? $_COOKIE['ng-postheader'] : 0));
 
 $max_search_results = 200;
 
@@ -247,10 +248,10 @@ function toolstrip_post($smallheader)
 function show_post_page($anums)
 {
     global $ngpath;
-    $header = (isset($_GET['header']) ? $_GET['header'] : 0);
+    global $post_headers;
     $num_posts = count($anums);
 
-    toolstrip_post($header);
+    toolstrip_post($post_headers);
 
     $i = 1;
     foreach ($anums as $anum) {
@@ -271,7 +272,7 @@ function show_post_page($anums)
 	$article = $ngpath . $anum;
 	if (file_exists($article)) {
 	    $adata = file_get_contents($article);
-	    show_post($adata, $anum, $header);
+	    show_post($adata, $anum, $post_headers);
 	} else {
 	    print '<p>Post '.$anum.' does not exist.';
 	}
