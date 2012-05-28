@@ -54,10 +54,16 @@ function check_input($name)
 
 $setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Clickable links in posts'),
 		 '<br>',
+		 array('name' => 'threaded', 'type' => 'checkbox', 'desc' => 'Use a threaded index'),
+		 '<br>',
 		 array('name' => 'newlinks', 'type' => 'checkbox', 'desc' => 'Number of new posts in threaded index are links to the new posts'),
 		 '<br>',
 		 array('name' => 'wordwrap', 'type' => 'checkbox', 'desc' => 'Word wrap posts at column '),
-		 array('name' => 'wordwraplen', 'type' => 'input', 'desc' => '', 'value' => '79'));
+		 array('name' => 'wordwraplen', 'type' => 'input', 'desc' => '', 'value' => '79'),
+		 '<p>',
+		 array('name' => 'markallread', 'type' => 'checkbox', 'desc' => 'Mark all posts read'),
+		 '<p>'
+		 );
 
 foreach ($setvars as $sv) {
     switch ($sv['type']) {
@@ -93,7 +99,7 @@ foreach ($setvars as $sv) {
 	}
     } else print $sv;
 }
-print '<br>';
+
 if (isset($_SERVER['HTTP_REFERER']))
     print '<input type="hidden" name="goto" value="'.$_SERVER['HTTP_REFERER'].'">';
 print '<input type="Submit" value="Save">';

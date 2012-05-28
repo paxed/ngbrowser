@@ -10,6 +10,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
+include "common.php";
+
 session_start();
 
 $ngpath = '/var/spool/leafnode/rec/games/roguelike/nethack/';
@@ -32,6 +34,14 @@ $overview = $ngpath . '.overview';
 
 $thread_subject = null; /* hacky */
 
+if (isset($_COOKIE['ng-markallread'])) {
+    unset($_COOKIE['ng-markallread']);
+    mk_cookie('ng-markallread');
+    mk_cookie('ng-lastvisit');
+    unset($_COOKIE['ng-lastvisit']);
+    unset($_SESSION['ng-lastvisit']);
+}
+
 $lastvisit = (isset($_SESSION['ng-lastvisit']) ? $_SESSION['ng-lastvisit'] :
 	      (isset($_COOKIE['ng-lastvisit']) ? $_COOKIE['ng-lastvisit'] : time()));
 
@@ -39,8 +49,6 @@ $wordwrap_linelen = (isset($_SESSION['ng-wordwrap']) && ($_SESSION['ng-wordwrap'
     ((isset($_COOKIE['ng-wordwrap']) && ($_COOKIE['ng-wordwrap']==1) && isset($_COOKIE['ng-wordwraplen'])) ? $_COOKIE['ng-wordwraplen'] : 0);
 
 if (!preg_match('/^[0-9]+$/', $wordwrap_linelen)) $wordwrap_linelen = 0;
-
-include "common.php";
 
 function searchform($str='', $casesense=0)
 {
@@ -84,12 +92,12 @@ function get_topics_array($idxdata)
 }
 
 
-function showindextable($idxdata, $idxtype=1)
+function showindextable($idxdata)
 {
-    global $ng_timedate_format, $lastvisit;
+    global $ng_timedate_format, $lastvisit, $threaded_index;
     print '<table class="idx">';
 
-    switch ($idxtype) {
+    switch ($threaded_index) {
     case 1:
 	$topics = get_topics_array($idxdata);
 	print '<tr>';
@@ -214,15 +222,10 @@ function show_post($adata, $anum, $smallhead=0)
     print '</pre>';
 }
 
-function toolstrip_index($threaded_index)
+function toolstrip_index()
 {
     print '<div class="tools">';
-    if ($threaded_index) {
-	print '<a href="?flat=1">Flat view</a>';
-    } else {
-	print '<a href="?flat=0">Threaded view</a>';
-    }
-    print '&nbsp;<a href="settings.php">Settings</a>';
+    print '<a href="settings.php">Settings</a>';
     print '</div>';
 }
 
@@ -278,10 +281,10 @@ function show_post_page($anums)
     }
 }
 
-function show_search_page($searchstr, $threaded_index, $casesense)
+function show_search_page($searchstr, $casesense)
 {
     global $overview, $max_search_results;
-    toolstrip_index($threaded_index);
+    toolstrip_index();
     $showit = 0;
     $results = '';
 
@@ -316,12 +319,12 @@ function show_search_page($searchstr, $threaded_index, $casesense)
       print '<table class="searchresult"><tr><td>' . $results . '</td></tr></table>';
     }
     if ($showit) {
-      showindextable($idxdata, $threaded_index);
+      showindextable($idxdata);
     }
     searchform($searchstr, $casesense);
 }
 
-function show_index_page($curpage, $searchstr, $threaded_index, $casesense)
+function show_index_page($curpage, $searchstr, $casesense)
 {
     global $overview, $pagesize;
     if ($curpage < 2) {
@@ -333,7 +336,7 @@ function show_index_page($curpage, $searchstr, $threaded_index, $casesense)
     }
     $idxdata = explode("\n", rtrim($idxdata));
 
-    toolstrip_index($threaded_index);
+    toolstrip_index();
     /*
     print '<a href="?p='.($curpage+1).'">prev</a>';
     print ' - ';
@@ -344,7 +347,7 @@ function show_index_page($curpage, $searchstr, $threaded_index, $casesense)
     }
     */
 
-    showindextable($idxdata, $threaded_index);
+    showindextable($idxdata);
     searchform($searchstr, $casesense);
 }
 
@@ -393,7 +396,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
 } else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#_-]+$/', urldecode($_GET['s']))) {
     $searchstr = urldecode($_GET['s']);
     page_head($ngname);
-    show_search_page($searchstr, $threaded_index, $casesense);
+    show_search_page($searchstr, $casesense);
 } else {
   /*
     if (isset($_GET['p']) && preg_match('/^[0-9]+$/', $_GET['p'])) {
@@ -401,7 +404,7 @@ if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
     }
   */
     page_head($ngname);
-    show_index_page($curpage, $searchstr, $threaded_index, $casesense);
+    show_index_page($curpage, $searchstr, $casesense);
 }
 
 page_foot();
