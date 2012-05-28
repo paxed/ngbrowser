@@ -123,7 +123,7 @@ function showindextable($idxdata)
 	    }
 	    print '</td>';
 	    print '<td>';
-	    $topic = htmlentities(substr($article[1], 0, 80));
+	    $topic = htmlentities(substr($article[1], 0, 80), ENT_QUOTES, 'ISO-8859-1');
 	    $anums = array();
 	    for ($i = 0; $i < $narticles; $i++) {
 		$anums[] = $t['articles'][$i][0];
@@ -133,7 +133,7 @@ function showindextable($idxdata)
 
 	    print '<td>';
 	    $author = $article[2];
-	    print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
+	    print htmlentities(preg_replace('/ <.*>\s*$/', '', $author), ENT_QUOTES, 'ISO-8859-1');
 	    print '</td>';
 
 	    print '<td>';
@@ -160,13 +160,13 @@ function showindextable($idxdata)
 		print '<tr'.($isnewer ? ' class="newer"' : '').'>';
 
 		print '<td>';
-		$topic = htmlentities(substr($article[1], 0, 80));
+		$topic = htmlentities(substr($article[1], 0, 80), ENT_QUOTES, 'ISO-8859-1');
 		print ($isnewer ? '<b>' : '')."<a href='?".$article[0]."'>".$topic."</a>".($isnewer ? '</b>' : '');
 		print '</td>';
 
 		print '<td>';
 		$author = $article[2];
-		print htmlentities(preg_replace('/ <.*>\s*$/', '', $author));
+		print htmlentities(preg_replace('/ <.*>\s*$/', '', $author), ENT_QUOTES, 'ISO-8859-1');
 		print '</td>';
 
 		print '<td>';
@@ -183,7 +183,7 @@ function showindextable($idxdata)
 function show_post($adata, $anum, $smallhead=0)
 {
     global $wordwrap_linelen, $thread_subject;
-    list($aheaders, $abody) = explode("\n\n", htmlentities($adata), 2);
+    list($aheaders, $abody) = explode("\n\n", htmlentities($adata, ENT_QUOTES, 'ISO-8859-1'), 2);
 
     if (preg_match("/\nContent-Transfer-Encoding: quoted-printable\n/", $aheaders)) {
 	$abody = quoted_printable_decode($abody);
