@@ -356,8 +356,6 @@ function show_index_page($curpage, $searchstr, $casesense)
 
 $searchstr = (isset($_COOKIE['ng-searchstr']) ? $_COOKIE['ng-searchstr'] : '');
 
-print '<pre>'; print_r($_POST); print '</pre>';
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
 	$_GET['s'] = $_POST['searchstr'];
