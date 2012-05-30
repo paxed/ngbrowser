@@ -31,6 +31,8 @@ $max_search_results = 200;
 
 date_default_timezone_set('Etc/UTC');
 
+$searchable_chars_preg = '/^[a-zA-Z0-9 :;,\.@#_-]+$/';
+
 $overview = $ngpath . '.overview';
 
 $thread_subject = null; /* hacky */
@@ -366,9 +368,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+$action = '';
+
 if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_STRING'])) {
     $tmp = explode("&", $_SERVER['QUERY_STRING']);
     $_GET['num'] = $tmp[0];
+    $action = 'showpost';
+} else if (!isset($_GET['num']) && preg_match($searchable_chars_preg, urldecode($_SERVER['QUERY_STRING']))) {
+    $tmp = explode("&", $_SERVER['QUERY_STRING']);
+    $_GET['s'] = $tmp[0];
+    $action = 'search';
 }
 
 if (isset($_GET['flat'])) {
@@ -387,18 +396,21 @@ mk_cookie('ng-threaded', $threaded_index);
 mk_cookie('ng-lastvisit', time());
 $_SESSION['ng-lastvisit'] = $lastvisit;
 
-if (isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*$/', $_GET['num'])) {
+switch ($action) {
+case 'showpost':
     $anums = array_unique(explode(",", $_GET['num']));
     ob_start();
     show_post_page($anums);
     $pagestr = ob_get_clean();
     page_head($ngname, ($thread_subject ? ($thread_subject) : null));
     print $pagestr;
-} else if (isset($_GET['s']) && preg_match('/^[a-zA-Z0-9 :;,\.@#_-]+$/', urldecode($_GET['s']))) {
+    break;
+case 'search':
     $searchstr = urldecode($_GET['s']);
     page_head($ngname);
     show_search_page($searchstr, $casesense);
-} else {
+    break;
+default:
   /*
     if (isset($_GET['p']) && preg_match('/^[0-9]+$/', $_GET['p'])) {
 	$curpage = $_GET['p'];
