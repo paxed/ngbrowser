@@ -1,6 +1,6 @@
 <?php
 
-$ngversion = 'v0.1';
+$ngversion = 'v0.2';
 
 function mk_cookie($name, $data = null)
 {

@@ -14,3 +14,12 @@ tr:nth-child(even) { background-color: #f0f0f0; }
 .sig { font-size:smaller; color:#606060; background-color:#f4f4ff; }
 .footer { float:right; font-size:smaller; }
 .footer a { text-decoration:none; color:#808080; }
+
+input[type=text] + label:hover,
+input[type=checkbox] + label:hover {
+  background-color:#e0e0e0;
+}
+
+input[type=checkbox]:checked + label {
+  text-shadow: 1px 0 #000000; /* fake bold */
+}

@@ -7,7 +7,7 @@ session_start();
 function mk_checkbox($name, $desc)
 {
   $checked = (($_POST[$name] == '1') ? ' checked' : '');
-  return '<span class="set-'.$name.'"><label><input type="checkbox" name="'.$name.'"'.$checked.'>'.$desc.'</label></span>';
+  return '<span class="set-'.$name.'"><input type="checkbox" id="chkbox-'.$name.'" name="'.$name.'"'.$checked.'><label for="chkbox-'.$name.'">'.$desc.'</label></span>';
 }
 
 function check_checkbox($name)
