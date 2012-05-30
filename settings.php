@@ -2,6 +2,8 @@
 
 include "common.php";
 
+session_start();
+
 function mk_checkbox($name, $desc)
 {
   $checked = (($_POST[$name] == '1') ? ' checked' : '');
@@ -109,5 +111,8 @@ if (isset($_SERVER['HTTP_REFERER']))
 print '<input type="Submit" value="Save">';
 print '</form>';
 print '</div>';
+
+if (isset($_SESSION['ng-lastvisit']))
+    print '<p>Last visit: '.date('r', $_SESSION['ng-lastvisit']);
 
 page_foot();
