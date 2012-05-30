@@ -356,6 +356,8 @@ function show_index_page($curpage, $searchstr, $casesense)
 
 $searchstr = (isset($_COOKIE['ng-searchstr']) ? $_COOKIE['ng-searchstr'] : '');
 
+print '<pre>'; print_r($_POST); print '</pre>';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['searchstr']) && !isset($_GET['s'])) {
 	$_GET['s'] = $_POST['searchstr'];
@@ -374,7 +376,9 @@ if (!isset($_GET['num']) && preg_match('/^[0-9]+(,[0-9]+)*/', $_SERVER['QUERY_ST
     $tmp = explode("&", $_SERVER['QUERY_STRING']);
     $_GET['num'] = $tmp[0];
     $action = 'showpost';
-} else if (!isset($_GET['num']) && preg_match($searchable_chars_preg, urldecode($_SERVER['QUERY_STRING']))) {
+} else if (isset($_GET['s']) && preg_match($searchable_chars_preg, $_GET['s'])) {
+    $action = 'search';
+} else if (preg_match($searchable_chars_preg, urldecode($_SERVER['QUERY_STRING']))) {
     $tmp = explode("&", $_SERVER['QUERY_STRING']);
     $_GET['s'] = $tmp[0];
     $action = 'search';
@@ -389,7 +393,7 @@ if (isset($_GET['s'])) {
 }
 
 
-$casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : 0);
+$casesense = ((isset($_GET['casesense']) && ($_GET['casesense']=='on')) ? 1 : (isset($_COOKIE['ng-casesense']) ? ($_COOKIE['ng-casesense'] == 1) : 0));
 
 
 mk_cookie('ng-threaded', $threaded_index);

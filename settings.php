@@ -62,6 +62,8 @@ $setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Cl
 		 '<br>',
 		 array('name' => 'wordwrap', 'type' => 'checkbox', 'desc' => 'Word wrap posts at column '),
 		 array('name' => 'wordwraplen', 'type' => 'input', 'desc' => '', 'value' => '79'),
+		 '<br>',
+		 array('name' => 'casesense', 'type' => 'checkbox', 'desc' => 'Searching is case insensitive'),
 		 '<p>',
 		 array('name' => 'markallread', 'type' => 'checkbox', 'desc' => 'Mark all posts read'),
 		 '<p>'
