@@ -210,19 +210,20 @@ function show_post($adata, $anum, $smallhead=0)
     if (preg_match("/\n-- \n/", $abody)) {
 	list($abody, $abodysig) = preg_split("/\n-- \n/", $abody, 2);
     }
-    print '<pre class="article">';
-    print '<div class="aheader">'.$aheaders.'</div>';
+
+    print '<div class="article">';
+    print '<pre class="aheader">'.$aheaders.'</pre>';
     print "\n";
-    print '<div class="abody">';
+    print '<pre class="abody">';
     if ($wordwrap_linelen > 10)
 	print wordwrap($abody, $wordwrap_linelen);
     else
 	print $abody;
     if (isset($abodysig)) {
-	print '<div class="sig">'."-- \n".$abodysig.'</div>';
+	print '<pre class="sig">'."-- \n".$abodysig.'</pre>';
     }
-    print '</div>';
     print '</pre>';
+    print '</div>';
 }
 
 function toolstrip_index()
@@ -241,7 +242,7 @@ function toolstrip_post($smallheader)
 	print '<a href="?'.$tmp.'">Small headers</a>';
     } else {
 	$tmp = preg_replace('/&header=0/', '', $_SERVER['QUERY_STRING']);
-	print '<a href="?'.$tmp.'&header=1">Full headers</a>';
+	print '<a href="?'.$tmp.'&amp;header=1">Full headers</a>';
     }
     print '&nbsp;<a href="settings.php">Settings</a>';
     print '</div>';
