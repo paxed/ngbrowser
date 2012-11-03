@@ -19,7 +19,7 @@ function check_checkbox($name)
       $_POST[$name] = 1;
     }
   } else {
-    if ($_COOKIE['ng-'.$name]) {
+    if (isset($_COOKIE['ng-'.$name])) {
       $_POST[$name] = (($_COOKIE['ng-'.$name] == '1') ? 1 : 0);
     } else {
       $_POST[$name] = 0;
@@ -44,7 +44,7 @@ function check_input($name)
 {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   } else {
-    if ($_COOKIE['ng-'.$name]) {
+    if (isset($_COOKIE['ng-'.$name])) {
       $_POST[$name] = $_COOKIE['ng-'.$name];
     }
   }
