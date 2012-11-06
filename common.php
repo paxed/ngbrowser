@@ -21,6 +21,7 @@ function page_head($title, $first=null)
     print '<html><head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" media="screen" href="newsgroup.css">
+<script src="newsgroup.js" type="text/javascript"></script>
 <title>'.($first ? ($first.' - ') : '').$title.'</title></head>';
 
     print '<body>';
@@ -31,12 +32,13 @@ function page_head($title, $first=null)
     }
 }
 
-function page_foot()
+function page_foot($pagetype="")
 {
     global $ngversion;
     print '
 <script type="text/javascript">
 <!--
+var pagetype = "'.$pagetype.'";
 document.write("<"+"div class=\'footer\'><"+"a href=\'http://github.com/paxed/ngbrowser\'>ngbrowser '.$ngversion.'</"+"a></"+"div>");
 //-->
 </script>

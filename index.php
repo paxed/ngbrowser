@@ -423,5 +423,5 @@ default:
     show_index_page($curpage, $searchstr, $casesense);
 }
 
-page_foot();
+page_foot($action);
 

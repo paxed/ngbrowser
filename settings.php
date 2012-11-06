@@ -66,6 +66,13 @@ $setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Cl
 		 array('name' => 'wordwraplen', 'type' => 'input', 'desc' => '', 'value' => '79'),
 		 '<br>',
 		 array('name' => 'casesense', 'type' => 'checkbox', 'desc' => 'Searching is case insensitive'),
+		 '<br>',
+		 array('name' => 'usejsnav', 'type' => 'checkbox', 'desc' => 'Enable javascript navigation'),
+		 '<br><blockquote>',
+		 array('name' => 'jsnav-goto-next', 'type' => 'input', 'desc' => '', 'value' => 'j'),' Go to next post',
+		 '<br>',
+		 array('name' => 'jsnav-goto-prev', 'type' => 'input', 'desc' => '', 'value' => 'k'),' Go to previous post',
+		 '</blockquote>',
 		 '<p>',
 		 array('name' => 'markallread', 'type' => 'checkbox', 'desc' => 'Mark all posts read'),
 		 '<p>'
