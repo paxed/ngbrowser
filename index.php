@@ -10,6 +10,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
+$ng_tz = 'Etc/UTC';
+
 include "common.php";
 
 session_start();
@@ -28,8 +30,6 @@ $casesense = 0;
 $post_headers = (isset($_GET['header']) ? $_GET['header'] : (isset($_COOKIE['ng-postheader']) ? $_COOKIE['ng-postheader'] : 0));
 
 $max_search_results = 200;
-
-date_default_timezone_set('Etc/UTC');
 
 $searchable_chars_preg = '/^[a-zA-Z0-9 :;,\.@#_-]+$/';
 

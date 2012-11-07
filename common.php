@@ -2,6 +2,8 @@
 
 $ngversion = 'v0.2';
 
+date_default_timezone_set($ng_tz);
+
 function mk_cookie($name, $data = null)
 {
     if ($data !== null) {
