@@ -50,9 +50,15 @@ function goto_post(dir)
     }
 }
 
+function goto_index()
+{
+    window.location = window.location.href.slice(0, -(window.location.search.length + window.location.hash.length));
+}
+
 var enable_navigation = readCookie('usejsnav');
 var key_goto_next_post = readCookie('jsnav-goto-next');
 var key_goto_prev_post = readCookie('jsnav-goto-prev');
+var key_goto_index = readCookie('jsnav-goto-index');
 
 function handle_keyb(e)
 {
@@ -97,6 +103,8 @@ function handle_keyb(e)
 	    goto_post(1);
 	} else if (key_goto_prev_post != null && (str == key_goto_prev_post)) {
 	    goto_post(-1);
+	} else if (key_goto_index != null && (str == key_goto_index)) {
+	    goto_index();
 	}
     } else if (pagetype == 'search') {
     } else {

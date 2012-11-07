@@ -72,6 +72,8 @@ $setvars = array(array('name' => 'urllinks', 'type' => 'checkbox', 'desc' => 'Cl
 		 array('name' => 'jsnav-goto-next', 'type' => 'input', 'desc' => '', 'value' => 'j'),' Go to next post',
 		 '<br>',
 		 array('name' => 'jsnav-goto-prev', 'type' => 'input', 'desc' => '', 'value' => 'k'),' Go to previous post',
+		 '<br>',
+		 array('name' => 'jsnav-goto-index', 'type' => 'input', 'desc' => '', 'value' => 'i'),' Go to newsgroup index',
 		 '</blockquote>',
 		 '<p>',
 		 array('name' => 'markallread', 'type' => 'checkbox', 'desc' => 'Mark all posts read'),
