@@ -10,8 +10,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
-$ng_tz = 'Etc/UTC';
-
 include "common.php";
 
 session_start();
