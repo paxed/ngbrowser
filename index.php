@@ -198,7 +198,7 @@ function show_post($adata, $anum, $smallhead=0)
     if (!$smallhead) {
 	$tmp = explode("\n", $aheaders);
 	$tmps = preg_grep("/^(From|Subject|Date): /", $tmp);
-	ksort($tmps);
+	rsort($tmps);
 	$aheaders = join("\n", array_values($tmps));
     }
 
