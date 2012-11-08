@@ -84,6 +84,19 @@ function goto_post(dir)
     }
 }
 
+function toggle_headers()
+{
+    var h = window.location.hash;
+    var s = window.location.search;
+    var ns = s;
+    if (s.match(/&header=1/)) {
+	ns = s.replace("&header=1", "");
+    } else {
+	ns = s + "&header=1";
+    }
+    window.location = window.location.href.slice(0, -(s.length + h.length)) + ns + h;
+}
+
 function goto_index()
 {
     window.location = window.location.href.slice(0, -(window.location.search.length + window.location.hash.length));
@@ -94,6 +107,7 @@ var key_goto_next_post = readCookie('jsnav-goto-next');
 var key_goto_prev_post = readCookie('jsnav-goto-prev');
 var key_goto_index = readCookie('jsnav-goto-index');
 var key_view_post = readCookie('jsnav-view-post');
+var key_toggle_headers = readCookie('jsnav-toggle-headers');
 
 function handle_keyb(e)
 {
@@ -143,6 +157,8 @@ function handle_keyb(e)
 	    goto_post(-1);
 	} else if (key_goto_index != null && (str == key_goto_index)) {
 	    goto_index();
+	} else if (key_toggle_headers != null && (str == key_toggle_headers)) {
+	    toggle_headers();
 	}
     } else if (pagetype == 'search') {
     } else {
