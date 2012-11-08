@@ -109,8 +109,11 @@ var key_goto_index = readCookie('jsnav-goto-index');
 var key_view_post = readCookie('jsnav-view-post');
 var key_toggle_headers = readCookie('jsnav-toggle-headers');
 
+var in_search_form = 0;
+
 function handle_keyb(e)
 {
+  if (in_search_form) return;
   if( !e ) {
     //if the browser did not pass the event information to the
     //function, we will have to obtain it from the event register
@@ -176,6 +179,11 @@ function handle_keyb(e)
 
 function handle_loaded()
 {
+    var e = document.getElementById('search_text_input');
+    if (e) {
+	e.onblur = function() { in_search_form = 0; }
+	e.onfocus = function() { in_search_form = 1; }
+    }
     goto_post_idx(0);
 }
 
@@ -183,4 +191,5 @@ if (enable_navigation) {
 //    document.onkeyup = handle_keyb;
     document.onkeypress = handle_keyb;
     window.onload = handle_loaded;
+
 }

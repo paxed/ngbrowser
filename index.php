@@ -62,7 +62,7 @@ function searchform($str='', $casesense=0)
     }
     print '<div class="searchform">';
     print '<form method="POST" action="./">';
-    print 'Search:<input type="text" name="searchstr" value="'.$str.'">';
+    print 'Search:<input id="search_text_input" type="text" name="searchstr" value="'.$str.'">';
     print '&nbsp;<span class="casesense"><label><input type="checkbox" name="casesense"'.$casesense.'>Case insensitive</label></span>';
     print '</form>';
     print '</div>';
