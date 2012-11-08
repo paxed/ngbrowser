@@ -43,6 +43,8 @@ if (isset($_COOKIE['ng-markallread'])) {
     unset($_SESSION['ng-lastvisit']);
 }
 
+$max_index_entry = 0;
+
 $lastvisit = (isset($_SESSION['ng-lastvisit']) ? $_SESSION['ng-lastvisit'] :
 	      (isset($_COOKIE['ng-lastvisit']) ? $_COOKIE['ng-lastvisit'] : time()));
 
@@ -96,7 +98,9 @@ function get_topics_array($idxdata)
 function showindextable($idxdata)
 {
     global $ng_timedate_format, $lastvisit, $threaded_index;
+    global $max_index_entry;
     print '<table class="idx">';
+    $idxnum = 1;
 
     switch ($threaded_index) {
     case 1:
@@ -110,7 +114,7 @@ function showindextable($idxdata)
 	foreach ($topics as $t) {
 	    $article = $t['articles'][0];
 	    $narticles = count($t['articles']);
-	    print '<tr>';
+	    print '<tr id="idx-'.($idxnum++).'">';
 	    print '<td>' . $narticles;
 	    if (isset($t['newer'])) {
 		print '&nbsp;<b>(';
@@ -128,7 +132,7 @@ function showindextable($idxdata)
 	    for ($i = 0; $i < $narticles; $i++) {
 		$anums[] = $t['articles'][$i][0];
 	    }
-	    print "<a href='?".join(",", $anums)."'>".$topic."</a>";
+	    print "<a id='pidx-".($idxnum-1)."' href='?".join(",", $anums)."'>".$topic."</a>";
 	    print '</td>';
 
 	    print '<td>';
@@ -157,11 +161,11 @@ function showindextable($idxdata)
 	print '</tr>';
 	foreach ($topics as $article) {
 		$isnewer = ($article[3] >= $lastvisit);
-		print '<tr'.($isnewer ? ' class="newer"' : '').'>';
+		print '<tr id="idx-'.($idxnum++).'"'.($isnewer ? ' class="newer"' : '').'">';
 
 		print '<td>';
 		$topic = htmlentities(substr($article[1], 0, 80), ENT_QUOTES, 'ISO-8859-1');
-		print ($isnewer ? '<b>' : '')."<a href='?".$article[0]."'>".$topic."</a>".($isnewer ? '</b>' : '');
+		print ($isnewer ? '<b>' : '')."<a id='pidx-".($idxnum-1)."' href='?".$article[0]."'>".$topic."</a>".($isnewer ? '</b>' : '');
 		print '</td>';
 
 		print '<td>';
@@ -178,6 +182,8 @@ function showindextable($idxdata)
     }
 
     print '</table>';
+
+    $max_index_entry = $idxnum;
 }
 
 function show_post($adata, $anum, $smallhead=0)
@@ -422,5 +428,5 @@ default:
     show_index_page($curpage, $searchstr, $casesense);
 }
 
-page_foot($action);
+page_foot($action, $max_index_entry);
 

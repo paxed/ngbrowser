@@ -22,6 +22,40 @@ function readCookie(name) {
   return null;
 }
 
+function hilight_post_idx(idx,hilite)
+{
+    e = document.getElementById('idx-'+idx);
+    if (!e) return;
+    if (hilite) {
+	e.style.backgroundColor='#d0d0d0';
+    } else {
+	e.style.backgroundColor='';
+    }
+}
+
+function goto_post_idx(dir)
+{
+    var cur = readCookie('curidx');
+    if (typeof max_index_entry == 'undefined') max_index_entry = 1;
+    if (max_index_entry < 1) return;
+    if (!cur) cur = 1;
+    hilight_post_idx(cur, 0);
+    cur = parseInt(cur) + dir;
+    if (cur < 1) cur = (max_index_entry-1);
+    if (cur > (max_index_entry-1)) cur = 1;
+    hilight_post_idx(cur, 1);
+    createCookie('curidx', cur, 256);
+}
+
+function view_selected_post()
+{
+    var cur = readCookie('curidx');
+    var e = document.getElementById('idx-'+cur);
+    if (!e) return;
+    e = document.getElementById('pidx-'+cur);
+    if (!e) return;
+    window.location = e.href;
+}
 
 function goto_post(dir)
 {
@@ -59,6 +93,7 @@ var enable_navigation = readCookie('usejsnav');
 var key_goto_next_post = readCookie('jsnav-goto-next');
 var key_goto_prev_post = readCookie('jsnav-goto-prev');
 var key_goto_index = readCookie('jsnav-goto-index');
+var key_view_post = readCookie('jsnav-view-post');
 
 function handle_keyb(e)
 {
@@ -78,21 +113,24 @@ function handle_keyb(e)
   var ctrl_key = e.ctrlKey;
   var alt_key = e.altKey;
 
-  if( typeof( e.keyCode ) == 'number'  ) {
+  e = e.charCode;
+
+//  if( typeof( e.keyCode ) == 'number'  ) {
     //DOM
-    e = e.keyCode;
-  } else if( typeof( e.which ) == 'number' ) {
+//    e = e.keyCode;
+//  } else if( typeof( e.which ) == 'number' ) {
     //NS 4 compatible
-    e = e.which;
-  } else if( typeof( e.charCode ) == 'number'  ) {
+//    e = e.which;
+//  } else if( typeof( e.charCode ) == 'number'  ) {
     //also NS 6+, Mozilla 0.9+
-    e = e.charCode;
-  } else {
+//    e = e.charCode;
+//  } else {
     //total failure, we have no way of obtaining the key code
-    return;
-  }
+//    return;
+//  }
 
   var str = String.fromCharCode(e);
+
   if (shift_key)
     str = str.toUpperCase();
   else
@@ -109,10 +147,24 @@ function handle_keyb(e)
     } else if (pagetype == 'search') {
     } else {
 	/* index */
+	if (key_goto_next_post != null && (str == key_goto_next_post)) {
+	    goto_post_idx(1);
+	} else if (key_goto_prev_post != null && (str == key_goto_prev_post)) {
+	    goto_post_idx(-1);
+	} else if (key_view_post != null && (str == key_view_post)) {
+	    view_selected_post();
+	}
     }
+}
 
+
+function handle_loaded()
+{
+    goto_post_idx(0);
 }
 
 if (enable_navigation) {
-    document.onkeyup = handle_keyb;
+//    document.onkeyup = handle_keyb;
+    document.onkeypress = handle_keyb;
+    window.onload = handle_loaded;
 }

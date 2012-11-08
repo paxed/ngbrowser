@@ -36,13 +36,14 @@ function page_head($title, $first=null)
     }
 }
 
-function page_foot($pagetype="")
+function page_foot($pagetype="",$max_index_entry=0)
 {
     global $ngversion;
     print '
 <script type="text/javascript">
 <!--
 var pagetype = "'.$pagetype.'";
+var max_index_entry = '.$max_index_entry.';
 document.write("<"+"div class=\'footer\'><"+"a href=\'http://github.com/paxed/ngbrowser\'>ngbrowser '.$ngversion.'</"+"a></"+"div>");
 //-->
 </script>
