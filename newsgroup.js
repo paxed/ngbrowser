@@ -164,6 +164,13 @@ function handle_keyb(e)
 	    toggle_headers();
 	}
     } else if (pagetype == 'search') {
+	if (key_goto_next_post != null && (str == key_goto_next_post)) {
+	    goto_post_idx(1);
+	} else if (key_goto_prev_post != null && (str == key_goto_prev_post)) {
+	    goto_post_idx(-1);
+	} else if (key_view_post != null && (str == key_view_post)) {
+	    view_selected_post();
+	}
     } else {
 	/* index */
 	if (key_goto_next_post != null && (str == key_goto_next_post)) {
