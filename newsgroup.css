@@ -3,7 +3,7 @@ h1,h2 { text-align:center; }
 .searchresult,
 .idx { margin-left:auto; margin-right:auto; }
 tr:nth-child(even) { background-color: #f0f0f0; }
-.idx tr:hover td { background-color: #e0e0e0; }
+/*.idx tr:hover td { background-color: #e0e0e0; }*/
 .idx tr td > a { display:block; }
 .article { margin-top:0; }
 .postctrl { font-weight:bold; }

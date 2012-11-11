@@ -114,7 +114,7 @@ function showindextable($idxdata)
 	foreach ($topics as $t) {
 	    $article = $t['articles'][0];
 	    $narticles = count($t['articles']);
-	    print '<tr id="idx-'.($idxnum++).'">';
+	    print '<tr id="idx-'.($idxnum++).'" class="idxrow">';
 	    print '<td>' . $narticles;
 	    if (isset($t['newer'])) {
 		print '&nbsp;<b>(';
@@ -161,7 +161,7 @@ function showindextable($idxdata)
 	print '</tr>';
 	foreach ($topics as $article) {
 		$isnewer = ($article[3] >= $lastvisit);
-		print '<tr id="idx-'.($idxnum++).'"'.($isnewer ? ' class="newer"' : '').'">';
+		print '<tr id="idx-'.($idxnum++).'" class="idxrow'.($isnewer ? ' newer' : '').'">';
 
 		print '<td>';
 		$topic = htmlentities(substr($article[1], 0, 80), ENT_QUOTES, 'ISO-8859-1');
