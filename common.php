@@ -50,3 +50,42 @@ document.write("<"+"div class=\'footer\'><"+"a href=\'http://github.com/paxed/ng
 ';
     print '</body></html>';
 }
+
+function join_ids($ids)
+{
+  $tmp = array();
+  $i = 0;
+  $len = count($ids);
+  while ($i < $len) {
+    $j = $i;
+    while (($j < $len-1) && ($ids[$j] == ($ids[$j+1] - 1))) $j++;
+    if ($j == $i) {
+      $tmp[] = $ids[$i];
+      $i++;
+    } else if ($j == ($i + 1)) {
+      $tmp[] = $ids[$i];
+      $tmp[] = $ids[$j];
+      $i += 2;
+    } else {
+      $tmp[] = $ids[$i] . '-' . $ids[$j];
+      $i = $j + 1;
+    }
+  }
+  return join(',', $tmp);
+}
+
+
+function explode_ids($ids)
+{
+  $tmp = array();
+  foreach (explode(',',$ids) as $i) {
+    if (preg_match('/^(\d+)-(\d+)$/', $i, $matches)) {
+      for ($j = min($matches[1],$matches[2]); $j <= max($matches[1],$matches[2]); $j++)
+	$tmp[] = $j;
+    } else {
+      $tmp[] = $i;
+    }
+  }
+  return $tmp;
+}
+

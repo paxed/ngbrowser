@@ -119,7 +119,7 @@ function showindextable($idxdata)
 	    if (isset($t['newer'])) {
 		print '&nbsp;<b>(';
 		if (isset($_COOKIE['ng-newlinks']) && ($_COOKIE['ng-newlinks'] == 1)) {
-		    print "<a href='?".join(",", $t['newer_posts'])."'>".$t['newer']."</a>";
+		    print "<a href='?".join_ids($t['newer_posts'])."'>".$t['newer']."</a>";
 		} else {
 		    print $t['newer'];
 		}
@@ -132,7 +132,7 @@ function showindextable($idxdata)
 	    for ($i = 0; $i < $narticles; $i++) {
 		$anums[] = $t['articles'][$i][0];
 	    }
-	    print "<a id='pidx-".($idxnum-1)."' href='?".join(",", $anums)."'>".$topic."</a>";
+	    print "<a id='pidx-".($idxnum-1)."' href='?".join_ids($anums)."'>".$topic."</a>";
 	    print '</td>';
 
 	    print '<td>';
@@ -406,7 +406,7 @@ $_SESSION['ng-lastvisit'] = $lastvisit;
 
 switch ($action) {
 case 'showpost':
-    $anums = array_unique(explode(",", $_GET['num']));
+    $anums = array_unique(explode_ids($_GET['num']));
     ob_start();
     show_post_page($anums);
     $pagestr = ob_get_clean();
